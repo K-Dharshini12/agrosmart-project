@@ -1,10 +1,16 @@
-const API_HOST = (window.location.port === "8000" || window.location.port === "")
+// ─── Backend URL Configuration ───────────────────────────────────────────────
+// When running locally (port 8000), use the same origin (backend serves frontend too).
+// When hosted on Netlify or any other domain, point to the deployed Render backend.
+const RENDER_BACKEND_URL = "https://agrosmart-ulavan-connect.onrender.com";
+
+const API_HOST = (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost")
   ? window.location.origin
-  : "http://127.0.0.1:8000";
+  : RENDER_BACKEND_URL;
+
 const API_BASE_URL = `${API_HOST}/api`;
-const WS_BASE_URL = (window.location.port === "8000" || window.location.port === "")
-  ? `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}/api/iot/ws`
-  : "ws://127.0.0.1:8000/api/iot/ws";
+const WS_BASE_URL = API_HOST.startsWith("https")
+  ? `wss://${API_HOST.replace(/^https?:\/\//, "")}/api/iot/ws`
+  : `ws://${API_HOST.replace(/^https?:\/\//, "")}/api/iot/ws`;
 
 window.AGRO_API_HOST = API_HOST;
 window.AGRO_API_BASE_URL = API_BASE_URL;
