@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroSmart - Smart Farming Technology | Ulavan Connect AI</title>
+  <meta name="description" content="AgroSmart empowers Tamil & Indian farmers with IoT sensors, automated irrigation, AI, and direct marketplace access. From soil to sale." />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            farm: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+            },
+            harvest: {
+              50: '#fffbeb',
+              100: '#fef3c7',
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+              700: '#b45309',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body class="min-h-screen bg-[#faf8f5] text-stone-900">
+
+  <!-- Top Navigation Header -->
+  <nav class="bg-white border-b border-stone-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        
+        <!-- Logo & Brand -->
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-farm-600 to-harvest-500 flex items-center justify-center text-white text-xl font-bold shadow-md">
+            🌾
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xl font-bold bg-gradient-to-r from-farm-800 to-farm-600 bg-clip-text text-transparent">AgroSmart</span>
+              <span data-i18n="nav.badge" class="text-xs bg-farm-100 text-farm-800 px-2 py-0.5 rounded-full font-medium">உழவன் AI</span>
+            </div>
+            <p data-i18n="nav.brand_sub" class="text-[11px] text-stone-500 font-medium">மண்ணிலிருந்து விற்பனை வரை • TechnoFarmers</p>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="hidden md:flex space-x-2">
+          <button id="nav-dashboard" onclick="switchTab('dashboard')" class="nav-btn flex items-center space-x-2 px-4 py-2 rounded-lg font-medium text-sm transition-all bg-farm-800 text-white shadow-farm">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            <span data-i18n="nav.dashboard">டாஷ்போர்டு (Dashboard)</span>
+          </button>
+          <button id="nav-controls" onclick="switchTab('controls')" class="nav-btn flex items-center space-x-2 px-4 py-2 rounded-lg font-medium text-sm transition-all text-stone-600 hover:bg-stone-100">
+            <i data-lucide="sliders" class="w-4 h-4"></i>
+            <span data-i18n="nav.controls">ஸ்மார்ட் பாசனம் (Controls)</span>
+          </button>
+          <button id="nav-marketplace" onclick="switchTab('marketplace')" class="nav-btn flex items-center space-x-2 px-4 py-2 rounded-lg font-medium text-sm transition-all text-stone-600 hover:bg-stone-100">
+            <i data-lucide="store" class="w-4 h-4"></i>
+            <span data-i18n="nav.marketplace">விவசாய சந்தை (Marketplace)</span>
+          </button>
+        </div>
+
+        <!-- Website Language Switcher & Status Badges -->
+        <div class="flex items-center space-x-3">
+          
+          <!-- Full Website Language Selector -->
+          <div class="flex items-center bg-stone-100 p-1 rounded-xl border border-stone-200">
+            <button onclick="changeSiteLanguage('ta')" id="site-lang-ta" class="px-3 py-1.5 text-xs rounded-lg font-bold transition-all bg-farm-800 text-white shadow-sm flex items-center space-x-1">
+              <span>🇮🇳</span>
+              <span>தமிழ்</span>
+            </button>
+            <button onclick="changeSiteLanguage('en')" id="site-lang-en" class="px-3 py-1.5 text-xs rounded-lg font-medium transition-all text-stone-600 hover:text-stone-900 flex items-center space-x-1">
+              <span>🇺🇸</span>
+              <span>English</span>
+            </button>
+          </div>
+
+          <div class="hidden lg:flex items-center space-x-1.5 bg-farm-50 text-farm-700 px-2.5 py-1 rounded-full border border-farm-200 text-xs font-medium">
+            <span class="w-2 h-2 rounded-full bg-farm-500 farm-pulse"></span>
+            <span data-i18n="nav.growing">பயிர் வளர்கிறது</span>
+          </div>
+          <div class="hidden sm:flex items-center space-x-1 bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full border border-blue-200 text-xs font-medium">
+            <i data-lucide="droplets" class="w-3.5 h-3.5 text-blue-500"></i>
+            <span id="header-moisture">78%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==================== TAB 1: DASHBOARD ==================== -->
+  <main id="tab-dashboard" class="tab-content">
+    <!-- Hero Banner -->
+    <div class="relative bg-gradient-to-r from-farm-800 via-farm-700 to-farm-600 text-white py-12 px-4 sm:px-6 lg:px-8 shadow-inner overflow-hidden">
+      <div class="absolute -right-10 -bottom-10 opacity-10 text-[200px] select-none pointer-events-none">🌾</div>
+      <div class="max-w-7xl mx-auto relative z-10">
+        <h1 data-i18n="hero.title" class="text-3xl sm:text-4xl font-bold tracking-tight mb-2">உங்கள் ஸ்மார்ட் பண்ணைக்கு நல்வரவு! 🌾</h1>
+        <p data-i18n="hero.subtitle" class="text-lg text-farm-100 mb-6 font-normal">நேரலை கண்காணிப்பு - பிரிவு #1, கோயம்புத்தூர், தமிழ்நாடு</p>
+        
+        <div class="flex flex-wrap items-center gap-4 text-sm text-farm-100">
+          <!-- Interactive Location Selector -->
+          <div onclick="openLocationModal()" class="flex items-center space-x-2 bg-farm-900/40 hover:bg-farm-900/70 border border-farm-600/50 px-3.5 py-1.5 rounded-lg cursor-pointer transition-all shadow-sm group" title="Change Location">
+            <i data-lucide="map-pin" class="w-4 h-4 text-amber-300 group-hover:scale-110 transition-transform"></i>
+            <span id="hero-selected-place" class="font-semibold text-white tracking-wide">Coimbatore (கோயம்புத்தூர்)</span>
+            <span class="text-[11px] bg-amber-400/20 text-amber-200 border border-amber-400/30 px-2 py-0.5 rounded font-medium flex items-center space-x-1">
+              <span id="hero-live-temp">28°C</span>
+              <i data-lucide="chevron-down" class="w-3 h-3 ml-0.5"></i>
+            </span>
+          </div>
+
+          <div class="flex items-center space-x-1.5">
+            <i data-lucide="clock" class="w-4 h-4 text-amber-300"></i>
+            <span id="live-clock">--:--:--</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <i data-lucide="activity" class="w-4 h-4 text-amber-300"></i>
+            <span data-i18n="hero.sensors_active">6 சென்சார்கள் இயங்குகின்றன (LoRaWAN)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Quick Action Buttons -->
+      <div class="flex flex-wrap gap-3 mb-8">
+        <button onclick="scrollToVoiceAssistant()" class="flex items-center space-x-2 bg-gradient-to-r from-farm-600 to-farm-700 text-white px-4 py-2.5 rounded-lg font-medium text-sm shadow-farm hover:from-farm-700 hover:to-farm-800 transition-all">
+          <i data-lucide="mic" class="w-4 h-4"></i>
+          <span data-i18n="action.ai">🎤 உழவன் தோழன் AI (Tamil & Thanglish)</span>
+        </button>
+        <button onclick="startVoiceCallModal()" class="flex items-center space-x-2 bg-gradient-to-r from-harvest-500 to-harvest-600 text-white px-4 py-2.5 rounded-lg font-medium text-sm shadow-harvest hover:from-harvest-600 hover:to-harvest-700 transition-all">
+          <i data-lucide="phone-call" class="w-4 h-4"></i>
+          <span data-i18n="action.call">📞 நேரலை வாய்ஸ் கால் (Voice Call)</span>
+        </button>
+        <button onclick="triggerSimulatedSMS()" class="flex items-center space-x-2 bg-white border border-stone-300 text-stone-700 px-4 py-2.5 rounded-lg font-medium text-sm hover:bg-stone-50 transition-all">
+          <i data-lucide="message-square" class="w-4 h-4 text-farm-600"></i>
+          <span data-i18n="action.sms">📱 SMS எச்சரிக்கை (Alerts)</span>
+        </button>
+        <button onclick="scrollToCCTV()" class="flex items-center space-x-2 bg-white border border-stone-300 text-stone-700 px-4 py-2.5 rounded-lg font-medium text-sm hover:bg-stone-50 transition-all">
+          <i data-lucide="video" class="w-4 h-4 text-blue-600"></i>
+          <span data-i18n="action.cctv">📹 CCTV பயிர் கண்காணிப்பு</span>
+        </button>
+      </div>
+
+      <!-- Live Sensor Telemetry Cards (Grid of 6) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="sensor-cards-grid">
+        
+        <!-- Soil Moisture -->
+        <div class="sensor-card bg-white rounded-xl p-5 border border-stone-200 shadow-soft">
+          <div class="flex items-center justify-between mb-3">
+            <span data-i18n="sensor.moisture.title" class="text-sm font-medium text-stone-500">மண் ஈரப்பதம் (Soil Moisture)</span>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-farm-100 text-farm-700">Online</span>
+          </div>
+          <div class="flex items-baseline space-x-2">
+            <span id="sensor-moisture" class="text-3xl font-bold text-stone-900">78</span>
+            <span class="text-sm font-semibold text-stone-500">%</span>
+          </div>
+          <p data-i18n="sensor.moisture.change" class="text-xs text-farm-600 mt-1 font-medium">+5% நேற்றை விட அதிகம்</p>
+          <p data-i18n="sensor.moisture.desc" class="text-xs text-stone-400 mt-2">தக்காளிக்கு உகந்த ஈரப்பதம்</p>
+        </div>
+
+        <!-- Soil Temperature -->
+        <div class="sensor-card bg-white rounded-xl p-5 border border-stone-200 shadow-soft">
+          <div class="flex items-center justify-between mb-3">
+            <span data-i18n="sensor.temp.title" class="text-sm font-medium text-stone-500">மண் வெப்பநிலை (Soil Temp)</span>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-farm-100 text-farm-700">Online</span>
+          </div>
+          <div class="flex items-baseline space-x-2">
+            <span id="sensor-temp" class="text-3xl font-bold text-stone-900">24</span>
+            <span class="text-sm font-semibold text-stone-500">°C</span>
+          </div>
+          <p data-i18n="sensor.temp.change" class="text-xs text-farm-600 mt-1 font-medium">+2°C காலையை விட அதிகம்</p>
+          <p data-i18n="sensor.temp.desc" class="text-xs text-stone-400 mt-2">வேர் பகுதிக்கு ஏற்ற உகந்த வெப்பநிலை</p>
+        </div>
+
+        <!-- Soil pH Level -->
+        <div class="sensor-card bg-white rounded-xl p-5 border border-stone-200 shadow-soft">
+          <div class="flex items-center justify-between mb-3">
+            <span data-i18n="sensor.ph.title" class="text-sm font-medium text-stone-500">மண் அமில-கார நிலை (Soil pH)</span>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-farm-100 text-farm-700">Online</span>
+          </div>
+          <div class="flex items-baseline space-x-2">
+            <span id="sensor-ph" class="text-3xl font-bold text-stone-900">6.8</span>
+            <span class="text-sm font-semibold text-stone-500">pH</span>
+          </div>
+          <p data-i18n="sensor.ph.change" class="text-xs text-stone-500 mt-1 font-medium">நிலையான அளவு (Stable)</p>
+          <p data-i18n="sensor.ph.desc" class="text-xs text-stone-400 mt-2">சத்துக்களை உறிஞ்ச சரியான நிலை</p>
+        </div>
+
+        <!-- Water Tank Storage -->
+        <div class="sensor-card bg-white rounded-xl p-5 border border-stone-200 shadow-soft">
+          <div class="flex items-center justify-between mb-3">
+            <span data-i18n="sensor.tank.title" class="text-sm font-medium text-stone-500">தண்ணீர் தொட்டி (Water Tank)</span>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Warning</span>
+          </div>
+          <div class="flex items-baseline space-x-2">
+            <span id="sensor-tank" class="text-3xl font-bold text-stone-900">1250</span>
+            <span class="text-sm font-semibold text-stone-500">L</span>
+          </div>
+          <p data-i18n="sensor.tank.change" class="text-xs text-red-500 mt-1 font-medium">-150L இன்று பயன்பாடு</p>
+          <p data-i18n="sensor.tank.desc" class="text-xs text-stone-400 mt-2">24 மணி நேரத்திற்குள் நிரப்பவும்</p>
+        </div>
+
+        <!-- Connectivity -->
+        <div class="sensor-card bg-white rounded-xl p-5 border border-stone-200 shadow-soft">
+          <div class="flex items-center justify-between mb-3">
+            <span data-i18n="sensor.conn.title" class="text-sm font-medium text-stone-500">இணைப்பு (Connectivity)</span>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-farm-100 text-farm-700">Online</span>
+          </div>
+          <div class="flex items-baseline space-x-2">
+            <span data-i18n="sensor.conn.val" class="text-2xl font-bold text-stone-900">வலுவானது</span>
+          </div>
+          <p class="text-xs text-farm-600 mt-1 font-medium">-65 dBm RSSI</p>
+          <p data-i18n="sensor.conn.desc" class="text-xs text-stone-400 mt-2">LoRaWAN நீண்ட தூர இணைப்பு சீரானது</p>
+        </div>
+
+        <!-- Weather -->
+        <div class="sensor-card bg-white rounded-xl p-5 border border-stone-200 shadow-soft">
+          <div class="flex items-center justify-between mb-3">
+            <span data-i18n="sensor.weather.title" class="text-sm font-medium text-stone-500">வானிலை (Weather)</span>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-farm-100 text-farm-700">Online</span>
+          </div>
+          <div class="flex items-baseline space-x-2">
+            <span class="text-3xl font-bold text-stone-900">28</span>
+            <span class="text-sm font-semibold text-stone-500">°C</span>
+          </div>
+          <p data-i18n="sensor.weather.change" class="text-xs text-stone-500 mt-1 font-medium">வெயில் (Sunny Day)</p>
+          <p data-i18n="sensor.weather.desc" class="text-xs text-stone-400 mt-2">நாளை மழை பெய்ய 85% வாய்ப்பு</p>
+        </div>
+      </div>
+
+      <!-- Main Lower Section: Left (AI Assistant & Alerts) + Right (CCTV & Features) -->
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        
+        <!-- Left 2 Columns -->
+        <div class="xl:col-span-2 space-y-6">
+          
+          <!-- AI Farm Voice Assistant Card -->
+          <div id="ai-assistant-card" class="bg-white rounded-xl p-6 border border-stone-200 shadow-farm">
+            <div class="flex flex-wrap items-center justify-between pb-4 border-b border-stone-100 gap-3">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full bg-farm-100 text-farm-700 flex items-center justify-center font-bold text-lg">
+                  🌾
+                </div>
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <h3 data-i18n="ai.title" class="font-bold text-stone-900">உழவன் தோழன் AI (AgroSmart Agronomist)</h3>
+                    <span id="active-model-tag" class="text-[10px] bg-farm-100 text-farm-800 px-2 py-0.5 rounded font-mono font-medium">Groq / Gemini Active</span>
+                  </div>
+                  <p data-i18n="ai.subtitle" class="text-xs text-stone-500">தூய தமிழ், வட்டார பேச்சுத் தமிழ் & தங்க்லீஷ் (Thanglish) இரண்டிலும் கேட்கலாம்</p>
+                </div>
+              </div>
+
+              <!-- Voice Controls (Stop & Read Aloud) -->
+              <div class="flex items-center space-x-2">
+                <div id="global-speech-indicator" class="hidden flex items-center space-x-1.5 text-xs text-farm-700 bg-farm-100 px-2.5 py-1 rounded-full font-medium">
+                  <span class="w-2 h-2 rounded-full bg-farm-600 animate-ping"></span>
+                  <span class="text-[11px] font-mono">🔊 Speaking...</span>
+                </div>
+                <button id="global-speech-stop-btn" onclick="stopSpeech()" class="hidden px-2.5 py-1 text-xs font-semibold rounded-lg bg-red-100 hover:bg-red-200 text-red-700 transition-all flex items-center space-x-1" title="Stop Voice">
+                  <span>⏹️</span>
+                  <span>நிறுத்து (Stop)</span>
+                </button>
+                <button onclick="readAloudLast()" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 transition-all flex items-center space-x-1" title="Read Aloud / Replay Voice">
+                  <span>🔊</span>
+                  <span>மீண்டும் கேள் (Read Aloud)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Chat Messages Log -->
+            <div id="chat-messages" class="h-64 overflow-y-auto space-y-3 py-4 pr-2 text-sm">
+              <div class="bg-farm-50 text-farm-900 p-3 rounded-lg border border-farm-100 max-w-[85%]">
+                <div class="flex items-center space-x-2 text-xs font-semibold text-farm-700 mb-1">
+                  <span>🤖 உழவன் தோழன்</span>
+                  <span class="text-[10px] text-stone-400">Just now</span>
+                </div>
+                <p id="initial-ai-greeting" data-i18n="ai.greeting">வணக்கம் உழவரே! நான் உங்களின் உழவன் ஏஐ உதவியாளர். மண் ஈரப்பதம், மழை நிலவரம், உரம், பூச்சி மேலாண்மை அல்லது தக்காளி மண்டி விலை பற்றி தூய தமிழ், பேச்சுத் தமிழ் அல்லது தங்க்லீஷில் கேளுங்கள்!</p>
+                <div class="mt-2.5 pt-2 border-t border-farm-200/60 flex flex-wrap items-center gap-2">
+                  <button onclick="readAloudLast()" class="px-2.5 py-1 text-[11px] rounded bg-white hover:bg-farm-100 text-farm-800 border border-farm-200 font-semibold flex items-center space-x-1 shadow-2xs transition-all">
+                    <span>🔊</span>
+                    <span>மீண்டும் வாசி (Read Aloud)</span>
+                  </button>
+                  <button onclick="stopSpeech()" class="px-2.5 py-1 text-[11px] rounded bg-white hover:bg-red-50 text-red-600 border border-stone-200 font-semibold flex items-center space-x-1 shadow-2xs transition-all">
+                    <span>⏹️</span>
+                    <span>நிறுத்து (Stop)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Topic Prompts (Tamil & Thanglish) -->
+            <div class="flex flex-wrap gap-2 pt-2 pb-3 border-t border-stone-100">
+              <button onclick="quickPrompt('soil')" class="text-xs bg-stone-100 hover:bg-farm-100 hover:text-farm-800 text-stone-700 px-3 py-1.5 rounded-full transition-all">🌱 Thanni paachalama?</button>
+              <button onclick="quickPrompt('weather')" class="text-xs bg-stone-100 hover:bg-farm-100 hover:text-farm-800 text-stone-700 px-3 py-1.5 rounded-full transition-all">🌧️ Nalaiki mazhai varuma?</button>
+              <button onclick="quickPrompt('pest')" class="text-xs bg-stone-100 hover:bg-farm-100 hover:text-farm-800 text-stone-700 px-3 py-1.5 rounded-full transition-all">🐛 Poochi thollaikku marunthu?</button>
+              <button onclick="quickPrompt('harvest')" class="text-xs bg-stone-100 hover:bg-farm-100 hover:text-farm-800 text-stone-700 px-3 py-1.5 rounded-full transition-all">🍅 Thakkali eppo arukalam?</button>
+              <button onclick="quickPrompt('price')" class="text-xs bg-stone-100 hover:bg-farm-100 hover:text-farm-800 text-stone-700 px-3 py-1.5 rounded-full transition-all">💰 Thakkali rate enna ippo?</button>
+              <button onclick="quickPrompt('fertilizer')" class="text-xs bg-stone-100 hover:bg-farm-100 hover:text-farm-800 text-stone-700 px-3 py-1.5 rounded-full transition-all">🧪 Enna uram podalam?</button>
+            </div>
+
+            <!-- Input Bar -->
+            <div class="flex items-center space-x-2 pt-2">
+              <input id="chat-input" type="text" data-i18n-ph="ai.placeholder" placeholder="தமிழிலோ அல்லது Thanglish-லோ உங்கள் கேள்வியை கேட்கவும்..." class="flex-1 border border-stone-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-farm-600 focus:border-transparent bg-stone-50" onkeydown="if(event.key==='Enter') sendChatMessage()" />
+              <button id="voice-record-btn" onclick="toggleVoiceRecording()" class="p-2.5 rounded-lg bg-farm-100 text-farm-700 hover:bg-farm-200 transition-all" title="Record Voice">
+                <i data-lucide="mic" class="w-5 h-5"></i>
+              </button>
+              <button onclick="sendChatMessage()" class="px-5 py-2.5 rounded-lg bg-farm-800 text-white font-medium text-sm hover:bg-farm-700 transition-all flex items-center space-x-1">
+                <span data-i18n="ai.send">அனுப்பு</span>
+                <i data-lucide="send" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Recent Alerts & Notifications -->
+          <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-soft">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="bell" class="w-5 h-5 text-harvest-500"></i>
+                <h3 data-i18n="alerts.title" class="font-bold text-stone-900">சமீபத்திய அறிவிப்புகள் (Alerts)</h3>
+              </div>
+              <span data-i18n="alerts.count" class="text-xs bg-stone-100 text-stone-600 px-2 py-1 rounded">3 புதியவை</span>
+            </div>
+
+            <div class="space-y-3" id="alerts-list">
+              <div class="flex items-start space-x-3 p-3 bg-stone-50 rounded-lg border border-stone-100">
+                <div class="w-2.5 h-2.5 rounded-full bg-harvest-500 mt-1.5 flex-shrink-0"></div>
+                <div class="flex-1">
+                  <p data-i18n="alerts.a1.title" class="font-semibold text-sm text-stone-800">தண்ணீர் தொட்டி அளவு 30% க்கும் குறைவு</p>
+                  <p data-i18n="alerts.a1.time" class="text-xs text-stone-400">2 மணி நேரத்திற்கு முன்</p>
+                  <p data-i18n="alerts.a1.action" class="text-xs font-medium text-farm-700 mt-1">பரிந்துரை: மோட்டார் போட்டு தொட்டியை நிரப்பவும்</p>
+                </div>
+              </div>
+
+              <div class="flex items-start space-x-3 p-3 bg-stone-50 rounded-lg border border-stone-100">
+                <div class="w-2.5 h-2.5 rounded-full bg-farm-500 mt-1.5 flex-shrink-0"></div>
+                <div class="flex-1">
+                  <p data-i18n="alerts.a2.title" class="font-semibold text-sm text-stone-800">மண் ஈரப்பதம் தக்காளிக்கு உகந்த அளவில் உள்ளது (78%)</p>
+                  <p data-i18n="alerts.a2.time" class="text-xs text-stone-400">4 மணி நேரத்திற்கு முன்</p>
+                  <p data-i18n="alerts.a2.action" class="text-xs font-medium text-farm-700 mt-1">செயல்பாடு: தற்போதைய பாசன சுழற்சியை தொடரவும்</p>
+                </div>
+              </div>
+
+              <div class="flex items-start space-x-3 p-3 bg-stone-50 rounded-lg border border-stone-100">
+                <div class="w-2.5 h-2.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></div>
+                <div class="flex-1">
+                  <p data-i18n="alerts.a3.title" class="font-semibold text-sm text-stone-800">வானிலை அறிக்கை: நாளை மழை பெய்ய வாய்ப்பு</p>
+                  <p data-i18n="alerts.a3.time" class="text-xs text-stone-400">6 மணி நேரத்திற்கு முன்</p>
+                  <p data-i18n="alerts.a3.action" class="text-xs font-medium text-farm-700 mt-1">பரிந்துரை: சொட்டுநீர் பாசனத்தை 50% குறைக்கவும்</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="space-y-6">
+          
+          <!-- Live CCTV Monitoring Feed -->
+          <div id="cctv-card" class="bg-white rounded-xl p-6 border border-stone-200 shadow-soft">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="video" class="w-5 h-5 text-farm-700"></i>
+                <h3 data-i18n="cctv.title" class="font-bold text-stone-900">Live CCTV பயிர் கண்காணிப்பு</h3>
+              </div>
+              <span id="cctv-status-badge" class="text-xs bg-stone-100 text-stone-600 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider flex items-center space-x-1.5 border border-stone-200">
+                <span id="cctv-status-dot" class="w-2 h-2 rounded-full bg-stone-400"></span>
+                <span id="cctv-status-text" data-i18n="cctv.no_signal">⚫ NO SIGNAL • DISCONNECTED</span>
+              </span>
+            </div>
+
+            <!-- Video Screen Container -->
+            <div class="relative aspect-video rounded-xl overflow-hidden bg-black border border-stone-800 shadow-inner group">
+              
+              <!-- 1. Disconnected TV Static Noise Canvas -->
+              <canvas id="cctv-static-canvas" class="w-full h-full block"></canvas>
+
+              <!-- Disconnected OSD Banner Overlay -->
+              <div id="cctv-disconnected-overlay" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none p-4 text-center">
+                <div class="bg-black/90 border border-red-500/80 rounded-xl px-5 py-3.5 shadow-2xl backdrop-blur-md">
+                  <div class="flex items-center justify-center space-x-2 text-red-500 font-mono font-bold text-sm tracking-widest mb-1">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-600 animate-ping"></span>
+                    <span>[ ⊘ NO CCTV SIGNAL ]</span>
+                  </div>
+                  <p class="text-[11px] text-stone-400 font-mono">INPUT_01: OFFLINE • 0 FPS • DISCONNECTED</p>
+                  <p data-i18n="cctv.no_signal" class="text-xs text-amber-400 font-medium mt-1">கேமரா இணைக்கப்படவில்லை</p>
+                </div>
+              </div>
+
+              <!-- 2. Real Live Video Element (Plays user's real webcam or stream) -->
+              <video id="cctv-video-stream" class="w-full h-full object-cover hidden" autoplay playsinline muted></video>
+
+              <!-- 3. Live Feed HUD Overlay (Active when camera connected) -->
+              <div id="cctv-live-hud" class="hidden absolute inset-0 pointer-events-none p-3 flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                  <div class="bg-black/70 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded font-mono border border-white/10 flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-red-500 farm-pulse"></span>
+                    <span id="cctv-cam-label">CAM_01 • 1080p 30fps</span>
+                  </div>
+                  <div class="bg-farm-900/80 backdrop-blur-sm text-farm-300 text-[10px] px-2 py-0.5 rounded font-mono border border-farm-500/30">
+                    AI YOLOv8 CROP CV: ACTIVE
+                  </div>
+                </div>
+
+                <!-- Simulated AI Detection Box on Live Feed -->
+                <div class="self-center border-2 border-dashed border-farm-400/80 bg-farm-500/10 rounded-lg px-4 py-2 text-center text-farm-100 text-[11px] font-mono shadow-lg backdrop-blur-[1px]">
+                  <span>🌿 Tomato Foliage Area [96% Healthy]</span>
+                </div>
+
+                <div class="flex justify-between items-end">
+                  <div class="bg-black/70 backdrop-blur-sm text-white text-[10px] px-2 py-0.5 rounded font-mono" id="cctv-timestamp">
+                    LIVE
+                  </div>
+                  <div class="bg-black/70 backdrop-blur-sm text-green-400 text-[10px] px-2 py-0.5 rounded font-mono">
+                    BITRATE: 4.2 Mbps
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CCTV Action Connect / Disconnect Buttons -->
+            <div class="mt-3 flex items-center space-x-2">
+              <button id="btn-open-cctv-modal" onclick="openCctvConnectModal()" class="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-farm-700 to-farm-800 hover:from-farm-800 hover:to-farm-900 text-white py-2 px-3 rounded-lg text-xs font-semibold shadow-sm transition-all">
+                <i data-lucide="video" class="w-4 h-4"></i>
+                <span data-i18n="cctv.connect_btn">📹 கேமராவை இணைக்கவும் (Connect Real CCTV)</span>
+              </button>
+              <button id="btn-disconnect-cctv" onclick="disconnectRealCctv()" class="hidden bg-stone-100 hover:bg-red-50 hover:text-red-700 text-stone-700 py-2 px-3 rounded-lg text-xs font-semibold border border-stone-200 transition-all flex items-center space-x-1">
+                <i data-lucide="power-off" class="w-3.5 h-3.5"></i>
+                <span data-i18n="cctv.disconnect_btn">துண்டி</span>
+              </button>
+            </div>
+
+            <p data-i18n="cctv.crop_desc" class="text-xs text-stone-500 mt-2 font-medium">📹 நேரலை பயிர் வளர்ச்சி கண்காணிப்பு கேமரா</p>
+
+            <!-- Computer Vision Analytics Breakdown -->
+            <div class="mt-3 pt-3 border-t border-stone-100 space-y-2 text-xs">
+              <div class="flex justify-between items-center">
+                <span data-i18n="cctv.health_label" class="text-stone-500 font-medium">பயிர் ஆரோக்கியம் (Health):</span>
+                <span id="cctv-health-val" data-i18n="cctv.health_val" class="font-bold text-farm-700 bg-farm-50 px-2 py-0.5 rounded">96% ஆரோக்கியமானது</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span data-i18n="cctv.pest_label" class="text-stone-500 font-medium">பூச்சி & இலை நோய்:</span>
+                <span id="cctv-pest-val" data-i18n="cctv.pest_val" class="font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded">None Detected</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span data-i18n="cctv.harvest_label" class="text-stone-500 font-medium">அறுவடைக்கு தயாராகும் காலம்:</span>
+                <span id="cctv-harvest-val" data-i18n="cctv.harvest_val" class="font-bold text-harvest-600 bg-amber-50 px-2 py-0.5 rounded">5-7 நாட்கள்</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- AgroSmart Voice Features Card -->
+          <div class="bg-gradient-to-br from-farm-50 via-white to-amber-50 rounded-xl p-6 border border-farm-200 shadow-soft">
+            <div class="flex items-center space-x-2 text-farm-800 mb-3 font-bold">
+              <i data-lucide="sparkles" class="w-5 h-5 text-harvest-500"></i>
+              <h3 data-i18n="features.title">முக்கிய வேளாண் அம்சங்கள்</h3>
+            </div>
+            
+            <ul class="space-y-2.5 text-xs text-stone-700">
+              <li class="flex items-center space-x-2">
+                <span class="text-base">🗣️</span>
+                <span data-i18n="features.f1">தமிழ், கொங்கு/மதுரை பேச்சுத் தமிழ் & Thanglish புரிதல்</span>
+              </li>
+              <li class="flex items-center space-x-2">
+                <span class="text-base">⚡</span>
+                <span data-i18n="features.f2">Groq & Google Gemini AI நேரடி ஆலோசனை</span>
+              </li>
+              <li class="flex items-center space-x-2">
+                <span class="text-base">🌧️</span>
+                <span data-i18n="features.f3">மழை முன்னறிவிப்புடன் தானியங்கி பாசன கட்டுப்பாடு</span>
+              </li>
+              <li class="flex items-center space-x-2">
+                <span class="text-base">🐛</span>
+                <span data-i18n="features.f4">இலை நோய் & பூச்சி தாக்குதலுக்கு இயற்கை தீர்வுகள்</span>
+              </li>
+              <li class="flex items-center space-x-2">
+                <span class="text-base">💰</span>
+                <span data-i18n="features.f5">நேரலை APMC மண்டி விலை & வியாபாரிகள் இணைப்பு</span>
+              </li>
+              <li class="flex items-center space-x-2">
+                <span class="text-base">📱</span>
+                <span data-i18n="features.f6">SMS மற்றும் வாய்ஸ் கால் வழிகாட்டல்</span>
+              </li>
+            </ul>
+
+            <button onclick="startVoiceCallModal()" class="w-full mt-5 bg-gradient-to-r from-farm-700 to-farm-600 text-white py-2.5 rounded-lg text-xs font-semibold hover:from-farm-800 hover:to-farm-700 transition-all shadow-farm flex items-center justify-center space-x-2">
+              <i data-lucide="phone-outgoing" class="w-4 h-4"></i>
+              <span data-i18n="features.btn">நேரலை வாய்ஸ் கால் பேசவும்</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== TAB 2: SMART CONTROLS ==================== -->
+  <main id="tab-controls" class="tab-content hidden">
+    <div class="bg-gradient-to-r from-farm-800 to-farm-600 text-white py-8 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto">
+        <h1 data-i18n="controls.header_title" class="text-3xl font-bold mb-1">ஸ்மார்ட் பாசன கட்டுப்பாடுகள் (Smart Controls)</h1>
+        <p data-i18n="controls.header_desc" class="text-base text-farm-100">தானியங்கி வால்வு கட்டுப்பாடு மற்றும் நுண்-வானிலை கண்காணிப்பு</p>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Actuator Valves Section -->
+      <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-soft mb-8">
+        <h2 data-i18n="controls.valves_title" class="text-lg font-bold text-stone-900 mb-4 flex items-center space-x-2">
+          <i data-lucide="sliders" class="w-5 h-5 text-farm-700"></i>
+          <span>பாசன வால்வுகள் (Field Irrigation Valves)</span>
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="valves-grid">
+          <!-- Valve 1 -->
+          <div class="p-5 border rounded-xl bg-stone-50 border-stone-200 flex items-center justify-between">
+            <div>
+              <h4 data-i18n="controls.v1_name" class="font-bold text-stone-900">முதன்மை பாசன வால்வு (Main Valve)</h4>
+              <p data-i18n="controls.v1_zone" class="text-xs text-stone-500">பகுதி: தக்காளி தோட்டம் A</p>
+              <div class="mt-2 text-xs font-semibold text-blue-600">Flow: 15 L/min</div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="valve-1-toggle" checked onchange="toggleValve(1, this.checked)" class="sr-only peer">
+              <div class="w-14 h-7 bg-stone-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-farm-600"></div>
+            </label>
+          </div>
+
+          <!-- Valve 2 -->
+          <div class="p-5 border rounded-xl bg-stone-50 border-stone-200 flex items-center justify-between">
+            <div>
+              <h4 data-i18n="controls.v2_name" class="font-bold text-stone-900">இரண்டாம் நிலை வால்வு (Secondary Valve)</h4>
+              <p data-i18n="controls.v2_zone" class="text-xs text-stone-500">பகுதி: காய்கறி தோட்டம் B</p>
+              <div class="mt-2 text-xs font-semibold text-stone-500">Flow: 8 L/min (Closed)</div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="valve-2-toggle" onchange="toggleValve(2, this.checked)" class="sr-only peer">
+              <div class="w-14 h-7 bg-stone-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-farm-600"></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Irrigation Intensity Slider -->
+        <div class="mt-6 pt-6 border-t border-stone-100">
+          <div class="flex justify-between items-center mb-2">
+            <span data-i18n="controls.intensity_title" class="text-sm font-semibold text-stone-700">பாசன தீவிரம் (Irrigation Intensity)</span>
+            <span id="intensity-val" class="text-sm font-bold text-farm-700">75%</span>
+          </div>
+          <input type="range" min="0" max="100" value="75" class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-farm-600" oninput="document.getElementById('intensity-val').innerText = this.value + '%'" />
+        </div>
+      </div>
+
+      <!-- Automation Rules -->
+      <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-soft mb-8">
+        <h2 data-i18n="controls.rules_title" class="text-lg font-bold text-stone-900 mb-4 flex items-center space-x-2">
+          <i data-lucide="cpu" class="w-5 h-5 text-farm-700"></i>
+          <span>தானியங்கி விதிகள் (Automated Control Rules)</span>
+        </h2>
+
+        <div class="space-y-4" id="rules-list">
+          <div class="flex items-center justify-between p-4 bg-stone-50 rounded-lg border border-stone-200">
+            <div>
+              <h4 data-i18n="controls.r1_name" class="font-semibold text-sm text-stone-900">மண் ஈரப்பதம் தானியங்கி பாசனம்</h4>
+              <p data-i18n="controls.r1_desc" class="text-xs text-stone-500">மண் ஈரப்பதம் 60% க்கும் கீழே போனால் தானாக வால்வு திறக்கும்</p>
+              <span data-i18n="controls.r1_status" class="inline-block mt-1 text-[11px] text-farm-700 font-medium">இந்த வாரம் 3 முறை தானாக இயங்கியுள்ளது</span>
+            </div>
+            <input type="checkbox" checked class="w-5 h-5 text-farm-600 accent-farm-600 rounded">
+          </div>
+
+          <div class="flex items-center justify-between p-4 bg-stone-50 rounded-lg border border-stone-200">
+            <div>
+              <h4 data-i18n="controls.r2_name" class="font-semibold text-sm text-stone-900">மழை நேர பாதுகாப்பு பாசனம்</h4>
+              <p data-i18n="controls.r2_desc" class="text-xs text-stone-500">மழை வரும் முன் நீர்ப்பாசனத்தை 50% குறைக்கும்</p>
+              <span data-i18n="controls.r2_status" class="inline-block mt-1 text-[11px] text-farm-700 font-medium">1 முறை இயங்கியுள்ளது</span>
+            </div>
+            <input type="checkbox" checked class="w-5 h-5 text-farm-600 accent-farm-600 rounded">
+          </div>
+        </div>
+      </div>
+
+      <!-- Weather Forecast Ribbon -->
+      <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-soft">
+        <h2 data-i18n="controls.weather_title" class="text-lg font-bold text-stone-900 mb-4 flex items-center space-x-2">
+          <i data-lucide="cloud-sun" class="w-5 h-5 text-amber-500"></i>
+          <span>வானிலை முன்னறிவிப்பு (Weather Forecast)</span>
+        </h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="p-4 bg-stone-50 rounded-xl text-center border border-stone-100">
+            <span data-i18n="controls.w_now" class="text-xs font-semibold text-stone-500">இப்போது</span>
+            <div class="text-2xl my-2">☀️</div>
+            <div class="text-xl font-bold text-stone-800">28°C</div>
+            <span class="text-xs text-stone-400">Humidity 65%</span>
+          </div>
+
+          <div class="p-4 bg-stone-50 rounded-xl text-center border border-stone-100">
+            <span data-i18n="controls.w_2pm" class="text-xs font-semibold text-stone-500">மதியம் 2:00</span>
+            <div class="text-2xl my-2">🌤️</div>
+            <div class="text-xl font-bold text-stone-800">31°C</div>
+            <span class="text-xs text-stone-400">Humidity 60%</span>
+          </div>
+
+          <div class="p-4 bg-stone-50 rounded-xl text-center border border-stone-100">
+            <span data-i18n="controls.w_6pm" class="text-xs font-semibold text-stone-500">மாலை 6:00</span>
+            <div class="text-2xl my-2">⛅</div>
+            <div class="text-xl font-bold text-stone-800">26°C</div>
+            <span class="text-xs text-stone-400">Humidity 72%</span>
+          </div>
+
+          <div class="p-4 bg-blue-50 rounded-xl text-center border border-blue-100">
+            <span data-i18n="controls.w_tmrw" class="text-xs font-semibold text-blue-700">நாளை</span>
+            <div class="text-2xl my-2">🌧️</div>
+            <div class="text-xl font-bold text-blue-900">24°C</div>
+            <span data-i18n="controls.w_rain" class="text-xs text-blue-600 font-semibold">மழை 85%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== TAB 3: MARKETPLACE ==================== -->
+  <main id="tab-marketplace" class="tab-content hidden">
+    <div class="bg-gradient-to-r from-farm-800 to-harvest-600 text-white py-8 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto">
+        <h1 data-i18n="market.header_title" class="text-3xl font-bold mb-1">விவசாய சந்தை (Agricultural Marketplace)</h1>
+        <p data-i18n="market.header_desc" class="text-base text-farm-100">இடைத்தரகர்கள் இன்றி மொத்த மற்றும் சில்லறை வியாபாரிகளிடம் நேரடியாக விற்பனை செய்யுங்கள்</p>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Top 4 Farmer Earnings / Sales Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-soft text-center">
+          <div class="text-2xl font-bold text-farm-700">₹1,45,280</div>
+          <div data-i18n="market.stat_earnings" class="text-xs text-stone-500 mt-1">மொத்த வருமானம் (Total Earnings)</div>
+        </div>
+        <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-soft text-center">
+          <div class="text-2xl font-bold text-farm-600">46</div>
+          <div data-i18n="market.stat_orders" class="text-xs text-stone-500 mt-1">இந்த மாத ஆர்டர்கள் (Orders)</div>
+        </div>
+        <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-soft text-center">
+          <div class="text-2xl font-bold text-harvest-600">4.8 ★</div>
+          <div data-i18n="market.stat_rating" class="text-xs text-stone-500 mt-1">உழவர் மதிப்பீடு (Rating)</div>
+        </div>
+        <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-soft text-center">
+          <div class="text-2xl font-bold text-blue-600">258</div>
+          <div data-i18n="market.stat_views" class="text-xs text-stone-500 mt-1">பார்வைகள் (Profile Views)</div>
+        </div>
+      </div>
+
+      <!-- Main Marketplace Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left 2 Cols -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- My Products Inventory -->
+          <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-soft">
+            <div class="flex items-center justify-between mb-4">
+              <h3 data-i18n="market.products_title" class="font-bold text-stone-900 flex items-center space-x-2">
+                <i data-lucide="package" class="w-5 h-5 text-farm-700"></i>
+                <span>எனது விளைபொருட்கள் (Listed Harvest Products)</span>
+              </h3>
+              <button onclick="openAddProductModal()" class="flex items-center space-x-1.5 bg-farm-800 text-white text-xs px-3.5 py-2 rounded-lg font-medium hover:bg-farm-700 transition-all">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span data-i18n="market.add_btn">பொருள் சேர்க்க</span>
+              </button>
+            </div>
+
+            <div class="space-y-3" id="products-list">
+              <!-- Product 1 -->
+              <div class="flex items-center justify-between p-4 bg-stone-50 rounded-lg hover:bg-stone-100 transition-all border border-stone-100">
+                <div class="flex items-center space-x-4">
+                  <div class="text-3xl">🍅</div>
+                  <div>
+                    <h4 data-i18n="market.p1_name" class="font-semibold text-stone-900">நாட்டுத் தக்காளி (Organic Tomatoes)</h4>
+                    <div class="flex items-center space-x-3 mt-1">
+                      <span class="text-base font-bold text-farm-700">₹85 <span data-i18n="market.per_kg" class="text-xs font-normal text-stone-500">கிலோவுக்கு</span></span>
+                      <span class="text-[11px] bg-farm-100 text-farm-800 font-medium px-2 py-0.5 rounded">Active</span>
+                    </div>
+                    <div class="flex items-center space-x-3 text-xs text-stone-400 mt-1">
+                      <span><span data-i18n="market.stock_label">கையிருப்பு</span>: 250 kg</span>
+                      <span>• 124 views</span>
+                      <span>• 4.8 ★</span>
+                      <span>• 23 orders</span>
+                    </div>
+                  </div>
+                </div>
+                <button class="text-xs border border-stone-300 px-3 py-1.5 rounded hover:bg-white text-stone-700 font-medium">Edit</button>
+              </div>
+
+              <!-- Product 2 -->
+              <div class="flex items-center justify-between p-4 bg-stone-50 rounded-lg hover:bg-stone-100 transition-all border border-stone-100">
+                <div class="flex items-center space-x-4">
+                  <div class="text-3xl">🥔</div>
+                  <div>
+                    <h4 data-i18n="market.p2_name" class="font-semibold text-stone-900">உருளைக்கிழங்கு (Fresh Potatoes)</h4>
+                    <div class="flex items-center space-x-3 mt-1">
+                      <span class="text-base font-bold text-farm-700">₹35 <span data-i18n="market.per_kg" class="text-xs font-normal text-stone-500">கிலோவுக்கு</span></span>
+                      <span class="text-[11px] bg-farm-100 text-farm-800 font-medium px-2 py-0.5 rounded">Active</span>
+                    </div>
+                    <div class="flex items-center space-x-3 text-xs text-stone-400 mt-1">
+                      <span><span data-i18n="market.stock_label">கையிருப்பு</span>: 500 kg</span>
+                      <span>• 89 views</span>
+                      <span>• 4.6 ★</span>
+                    </div>
+                  </div>
+                </div>
+                <button class="text-xs border border-stone-300 px-3 py-1.5 rounded hover:bg-white text-stone-700 font-medium">Edit</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Current Mandi Market Prices -->
+          <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-soft">
+            <h3 data-i18n="market.mandi_title" class="font-bold text-stone-900 mb-4 flex items-center space-x-2">
+              <i data-lucide="trending-up" class="w-5 h-5 text-harvest-500"></i>
+              <span>நேரலை மண்டி விலை நிலவரம் (Live APMC Mandi Rates)</span>
+            </h3>
+
+            <div class="space-y-3" id="mandi-list">
+              <div class="flex items-center justify-between p-3.5 bg-stone-50 rounded-lg">
+                <div>
+                  <span class="font-semibold text-sm text-stone-900">தக்காளி (Tomatoes)</span>
+                  <span data-i18n="market.demand_high" class="ml-2 text-[10px] bg-farm-100 text-farm-800 font-semibold px-2 py-0.5 rounded">அதிக தேவை (High Demand)</span>
+                </div>
+                <div class="text-right">
+                  <div class="flex items-center space-x-1.5">
+                    <span class="text-base font-bold text-stone-900">₹85</span>
+                    <span class="text-xs text-farm-600 font-semibold">↗️ +12%</span>
+                  </div>
+                  <span data-i18n="market.per_kg" class="text-[11px] text-stone-400">per kg</span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between p-3.5 bg-stone-50 rounded-lg">
+                <div>
+                  <span class="font-semibold text-sm text-stone-900">வெங்காயம் (Onions)</span>
+                  <span data-i18n="market.demand_high" class="ml-2 text-[10px] bg-farm-100 text-farm-800 font-semibold px-2 py-0.5 rounded">அதிக தேவை</span>
+                </div>
+                <div class="text-right">
+                  <div class="flex items-center space-x-1.5">
+                    <span class="text-base font-bold text-stone-900">₹45</span>
+                    <span class="text-xs text-farm-600 font-semibold">↗️ +8%</span>
+                  </div>
+                  <span data-i18n="market.per_kg" class="text-[11px] text-stone-400">per kg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Col: Nearby Buyers & AI Advisory -->
+        <div class="space-y-6">
+          <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-soft">
+            <h3 data-i18n="market.buyers_title" class="font-bold text-stone-900 mb-4 flex items-center space-x-2">
+              <i data-lucide="users" class="w-5 h-5 text-farm-700"></i>
+              <span>அருகிலுள்ள வியாபாரிகள் (Nearby Buyers)</span>
+            </h3>
+
+            <div class="space-y-3" id="buyers-list">
+              <div class="p-3.5 bg-stone-50 rounded-lg border border-stone-100">
+                <div class="flex justify-between items-start mb-1">
+                  <div>
+                    <h4 class="font-semibold text-sm text-stone-900">Fresh Valley Organic Store</h4>
+                    <p class="text-xs text-stone-500">📍 கோவை / ஈரோடு - 12 km</p>
+                  </div>
+                  <span class="text-[10px] bg-stone-200 px-2 py-0.5 rounded font-medium uppercase">Retail</span>
+                </div>
+                <div class="flex justify-between items-center mt-2 text-xs">
+                  <span class="font-bold text-farm-700">₹15,000 avg order</span>
+                  <span class="font-semibold text-harvest-600">4.7 ★</span>
+                </div>
+                <button data-i18n="market.connect_btn" onclick="alert('வியாபாரியுடன் நேரடி இணைப்பு துவக்கப்பட்டது!')" class="w-full mt-2.5 bg-farm-800 hover:bg-farm-700 text-white py-1.5 rounded text-xs font-semibold transition-all">தொடர்பு கொள்ள</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Market Insights -->
+          <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-5 border border-amber-200 shadow-soft">
+            <h4 data-i18n="market.ai_tip_title" class="font-bold text-sm text-amber-900 mb-2 flex items-center space-x-1.5">
+              <span>💡</span>
+              <span>AI சந்தை ஆலோசனை</span>
+            </h4>
+            <p data-i18n="market.ai_tip_desc" class="text-xs text-amber-950 leading-relaxed">
+              அடுத்த வாரம் திருமண மற்றும் உணவக தேவைகள் அதிகம் இருப்பதால் தக்காளி விலை 15% உயரக்கூடும். உரிய நேரத்தில் அறுவடை செய்ய திட்டமிடுங்கள்!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== LIVE VOICE CALL MODAL ==================== -->
+  <div id="voice-call-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl relative">
+      <span class="absolute top-4 right-4 bg-farm-100 text-farm-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full farm-pulse">
+        Live Call
+      </span>
+
+      <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-tr from-farm-700 to-farm-500 flex items-center justify-center text-white text-3xl shadow-farm farm-pulse my-4">
+        🌾
+      </div>
+
+      <h3 class="text-lg font-bold text-stone-900">உழவன் தோழன் AI</h3>
+      <p id="call-lang-label" class="text-xs text-stone-500 mt-1">Tamil & Thanglish Voice Call</p>
+      <div class="text-sm font-mono text-farm-700 font-semibold mt-2" id="call-timer">00:00</div>
+
+      <div class="bg-stone-50 p-3 rounded-lg text-xs italic text-stone-700 my-4 border border-stone-100" id="call-transcript-quote">
+        "வணக்கம் உழவரே! நான் உங்களின் உழவன் ஏஐ உதவியாளர்."
+      </div>
+
+      <!-- Controls -->
+      <div class="flex items-center justify-center space-x-4 mt-6">
+        <button id="btn-call-mic" onclick="toggleCallMic()" class="w-12 h-12 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100 text-stone-700">
+          <i data-lucide="mic" class="w-5 h-5"></i>
+        </button>
+        <button onclick="endVoiceCallModal()" class="w-14 h-14 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-lg transition-transform active:scale-95">
+          <i data-lucide="phone-off" class="w-6 h-6"></i>
+        </button>
+        <button id="btn-call-speaker" onclick="toggleCallSpeaker()" class="w-12 h-12 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100 text-stone-700">
+          <i data-lucide="volume-2" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <p class="text-[11px] text-stone-400 mt-4" id="call-status-line">🎤 பேசலாம்... • 🔊 ஸ்பீக்கர் ஆன்</p>
+    </div>
+  </div>
+
+  <!-- ==================== CONNECT REAL CCTV MODAL ==================== -->
+  <div id="cctv-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-3 border-b border-stone-100">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-farm-100 text-farm-800 flex items-center justify-center">
+            <i data-lucide="video" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 data-i18n="cctv.modal_title" class="font-bold text-stone-900 text-base">நேரலை CCTV கேமரா இணைப்பு</h3>
+            <p data-i18n="cctv.modal_desc" class="text-[11px] text-stone-500">உங்கள் லேப்டாப்/மொபைல் கேமராவை இணைக்கலாம் அல்லது ஐபி கேமரா ஸ்ட்ரீமை சேர்க்கலாம்.</p>
+          </div>
+        </div>
+        <button onclick="closeCctvConnectModal()" class="text-stone-400 hover:text-stone-700 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Option 1: One-Click Device Camera / Webcam -->
+      <div class="mt-4 p-4 rounded-xl bg-gradient-to-br from-farm-50 to-white border border-farm-200">
+        <div class="flex items-start space-x-3">
+          <div class="text-2xl">📷</div>
+          <div class="flex-1">
+            <h4 class="font-bold text-xs text-farm-900 uppercase tracking-wider">விருப்பம் 1: சாதன வெப்கேம் / மொபைல் கேமரா</h4>
+            <p class="text-xs text-stone-600 mt-1">உங்கள் சாதனத்தின் கேமராவை உடனடியாக இணைத்து நேரலை பயிர் கண்காணிப்பை தொடங்கலாம்.</p>
+            <button onclick="connectLocalWebcam()" class="mt-3 w-full bg-farm-800 hover:bg-farm-700 text-white py-2 px-3 rounded-lg text-xs font-semibold shadow-sm transition-all flex items-center justify-center space-x-2">
+              <i data-lucide="camera" class="w-4 h-4"></i>
+              <span data-i18n="cctv.webcam_btn">📷 சாதன கேமராவை இயக்கு (Connect Device Camera)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Option 2: IP Camera / RTSP Stream -->
+      <div class="mt-4 p-4 rounded-xl bg-stone-50 border border-stone-200">
+        <div class="flex items-start space-x-3">
+          <div class="text-2xl">🌐</div>
+          <div class="flex-1">
+            <h4 class="font-bold text-xs text-stone-800 uppercase tracking-wider">விருப்பம் 2: IP கேமரா / RTSP / HTTP Stream</h4>
+            <p class="text-xs text-stone-500 mt-1">உங்கள் பண்ணை IP கேமரா அல்லது RTSP / HLS வீடியோ ஸ்ட்ரீம் URL-ஐ உள்ளிடவும்:</p>
+            
+            <input id="cctv-stream-url-input" type="text" data-i18n-ph="cctv.stream_ph" placeholder="RTSP அல்லது HTTP Stream URL (எ.கா: http://192.168.1.50:8080/video)" class="mt-2 w-full border border-stone-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-farm-600 focus:outline-none bg-white font-mono" />
+            
+            <div class="mt-2 flex space-x-2">
+              <input id="cctv-cam-name-input" type="text" placeholder="கேமரா பெயர் (எ.கா: Tomato Field South Cam)" class="flex-1 border border-stone-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-farm-600 focus:outline-none bg-white" value="Tomato Polyhouse Cam #1" />
+              <button onclick="connectStreamUrl()" class="bg-stone-800 hover:bg-stone-900 text-white px-4 py-2 rounded-lg text-xs font-semibold transition-all">
+                <span data-i18n="cctv.stream_btn">🔗 இணைக்கவும்</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 flex justify-end">
+        <button onclick="closeCctvConnectModal()" class="px-4 py-2 rounded-lg text-xs font-semibold text-stone-600 hover:bg-stone-100 transition-all" data-i18n="cctv.cancel_btn">
+          மூடு (Close)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== LOCATION SELECTOR MODAL ==================== -->
+  <div id="location-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-stone-100">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-farm-100 text-farm-800 flex items-center justify-center">
+            <i data-lucide="map-pin" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 data-i18n="location.modal_title" class="font-bold text-stone-900 text-base">பண்ணை இருப்பிடத்தை தேர்வு செய்யவும்</h3>
+            <p class="text-[11px] text-stone-500">நேரலை வானிலை, மழை முன்னறிவிப்பு மற்றும் மண் தகவல்கள் இந்த இடத்திற்கு ஏற்ப மாறும்.</p>
+          </div>
+        </div>
+        <button onclick="closeLocationModal()" class="text-stone-400 hover:text-stone-700 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Real-time Place Search Input -->
+      <div class="mt-4">
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3 top-2.5"></i>
+          <input id="location-search-input" type="text" data-i18n-ph="location.search_ph" placeholder="ஊர் / மாவட்டம் தேடவும் (எ.கா: மதுரை, ஈரோடு, சேலம்)..." class="w-full border border-stone-300 rounded-lg pl-9 pr-4 py-2 text-xs focus:ring-2 focus:ring-farm-600 focus:outline-none bg-stone-50" oninput="handleLocationSearch(this.value)" />
+        </div>
+        <!-- Search Results Dropdown -->
+        <div id="location-search-results" class="hidden mt-2 bg-white border border-stone-200 rounded-lg shadow-lg max-h-48 overflow-y-auto divide-y divide-stone-100 text-xs"></div>
+      </div>
+
+      <!-- Popular Tamil Nadu Agricultural Districts -->
+      <div class="mt-4">
+        <h4 data-i18n="location.popular" class="text-xs font-bold text-stone-700 mb-2 uppercase tracking-wider">முக்கிய விவசாய மாவட்டங்கள்:</h4>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="popular-places-grid">
+          <!-- Dynamically populated or static chips -->
+          <button onclick="selectPlace('Coimbatore', 11.0055, 76.9661, 'கோயம்புத்தூர்')" class="text-left p-2.5 rounded-lg border border-stone-200 hover:border-farm-500 hover:bg-farm-50 transition-all text-xs font-medium text-stone-800">
+            📍 Coimbatore <span class="block text-[10px] text-stone-400">கோயம்புத்தூர்</span>
+          </button>
+          <button onclick="selectPlace('Madurai', 9.9252, 78.1198, 'மதுரை')" class="text-left p-2.5 rounded-lg border border-stone-200 hover:border-farm-500 hover:bg-farm-50 transition-all text-xs font-medium text-stone-800">
+            📍 Madurai <span class="block text-[10px] text-stone-400">மதுரை</span>
+          </button>
+          <button onclick="selectPlace('Salem', 11.6643, 78.1460, 'சேலம்')" class="text-left p-2.5 rounded-lg border border-stone-200 hover:border-farm-500 hover:bg-farm-50 transition-all text-xs font-medium text-stone-800">
+            📍 Salem <span class="block text-[10px] text-stone-400">சேலம்</span>
+          </button>
+          <button onclick="selectPlace('Erode', 11.3410, 77.7172, 'ஈரோடு')" class="text-left p-2.5 rounded-lg border border-stone-200 hover:border-farm-500 hover:bg-farm-50 transition-all text-xs font-medium text-stone-800">
+            📍 Erode <span class="block text-[10px] text-stone-400">ஈரோடு</span>
+          </button>
+          <button onclick="selectPlace('Thanjavur', 10.7870, 79.1378, 'தஞ்சாவூர்')" class="text-left p-2.5 rounded-lg border border-stone-200 hover:border-farm-500 hover:bg-farm-50 transition-all text-xs font-medium text-stone-800">
+            📍 Thanjavur <span class="block text-[10px] text-stone-400">தஞ்சாவூர் (டெல்டா)</span>
+          </button>
+          <button onclick="selectPlace('Dindigul', 10.3673, 77.9803, 'திண்டுக்கல்')" class="text-left p-2.5 rounded-lg border border-stone-200 hover:border-farm-500 hover:bg-farm-50 transition-all text-xs font-medium text-stone-800">
+            📍 Dindigul <span class="block text-[10px] text-stone-400">திண்டுக்கல்</span>
+          </button>
+          <button onclick="selectPlace('Tirunelveli', 8.7139, 77.7567, 'திருநெல்வேலி')" class="text-left p-2.5 rounded-lg border border-stone-200 hover:border-farm-500 hover:bg-farm-50 transition-all text-xs font-medium text-stone-800">
+            📍 Tirunelveli <span class="block text-[10px] text-stone-400">திருநெல்வேலி</span>
+          </button>
+          <button onclick="selectPlace('Trichy', 10.7905, 78.7047, 'திருச்சிராப்பள்ளி')" class="text-left p-2.5 rounded-lg border border-stone-200 hover:border-farm-500 hover:bg-farm-50 transition-all text-xs font-medium text-stone-800">
+            📍 Trichy <span class="block text-[10px] text-stone-400">திருச்சிராப்பள்ளி</span>
+          </button>
+          <button onclick="selectPlace('The Nilgiris', 11.4102, 76.6950, 'நீலகிரி / ஊட்டி')" class="text-left p-2.5 rounded-lg border border-stone-200 hover:border-farm-500 hover:bg-farm-50 transition-all text-xs font-medium text-stone-800">
+            📍 The Nilgiris <span class="block text-[10px] text-stone-400">ஊட்டி / நீலகிரி</span>
+          </button>
+          <button onclick="selectPlace('Chennai', 13.0827, 80.2707, 'சென்னை')" class="text-left p-2.5 rounded-lg border border-stone-200 hover:border-farm-500 hover:bg-farm-50 transition-all text-xs font-medium text-stone-800">
+            📍 Chennai <span class="block text-[10px] text-stone-400">சென்னை</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-5 flex justify-end">
+        <button onclick="closeLocationModal()" class="px-4 py-2 rounded-lg text-xs font-semibold text-stone-600 hover:bg-stone-100 transition-all">
+          மூடு (Close)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/translations.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

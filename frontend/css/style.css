@@ -1,0 +1,76 @@
+:root {
+  --background: 45 20% 97%;
+  --foreground: 140 30% 15%;
+  --card: 0 0% 100%;
+  --card-foreground: 140 30% 15%;
+  --primary: 140 60% 25%;
+  --primary-foreground: 45 40% 95%;
+  --secondary: 35 40% 85%;
+  --secondary-foreground: 140 50% 20%;
+  --muted: 45 15% 92%;
+  --muted-foreground: 140 20% 45%;
+  --accent: 45 90% 60%;
+  --accent-foreground: 140 60% 15%;
+  --destructive: 0 75% 55%;
+  --destructive-foreground: 45 40% 95%;
+  --border: 140 15% 85%;
+  --farm-500: #1f8a4c;
+  --farm-600: #166534;
+  --harvest-500: #d97706;
+  --harvest-600: #b45309;
+}
+
+body {
+  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  margin: 0;
+  padding: 0;
+}
+
+.gradient-farm {
+  background: linear-gradient(135deg, hsl(140, 60%, 25%), hsl(100, 55%, 35%));
+}
+
+.gradient-harvest {
+  background: linear-gradient(135deg, hsl(45, 90%, 60%), hsl(35, 80%, 55%));
+}
+
+.shadow-farm {
+  box-shadow: 0 10px 30px -10px rgba(22, 101, 52, 0.25);
+}
+
+.shadow-soft {
+  box-shadow: 0 4px 15px -3px rgba(22, 50, 30, 0.08);
+}
+
+.farm-pulse {
+  animation: farmPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes farmPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+.agri-float {
+  animation: agriFloat 3s ease-in-out infinite;
+}
+
+@keyframes agriFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+
+.transition-smooth {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sensor-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sensor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(22, 101, 52, 0.15);
+}

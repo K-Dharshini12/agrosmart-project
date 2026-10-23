@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+  <title>TerraPulse AI / உழவன் AI - Smart Farming Assistant</title>
+  
+  <!-- Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Tamil:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+
+  <!-- Tailwind CSS with Stitch Design Tokens -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "secondary-fixed": "#ffdf9a",
+            "tertiary": "#4f576d",
+            "inverse-on-surface": "#eff1ee",
+            "secondary-container": "#fdc425",
+            "on-primary": "#ffffff",
+            "on-secondary": "#ffffff",
+            "outline-variant": "#becabc",
+            "on-tertiary-container": "#f2f3ff",
+            "primary-fixed": "#95f8a7",
+            "outline": "#6f7a6e",
+            "on-surface-variant": "#3f493f",
+            "surface-container-high": "#e7e9e6",
+            "primary": "#00652c",
+            "on-background": "#191c1b",
+            "surface-container-low": "#f2f4f1",
+            "on-primary-fixed": "#00210a",
+            "error-container": "#ffdad6",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed": "#251a00",
+            "surface": "#f8faf7",
+            "surface-variant": "#e1e3e0",
+            "on-error": "#ffffff",
+            "surface-tint": "#006d30",
+            "on-surface": "#191c1b",
+            "inverse-surface": "#2e312f",
+            "secondary": "#785a00",
+            "secondary-fixed-dim": "#f7be1d",
+            "on-error-container": "#93000a",
+            "surface-container-highest": "#e1e3e0",
+            "on-secondary-container": "#6d5200",
+            "surface-container": "#eceeeb",
+            "on-secondary-fixed-variant": "#5a4300",
+            "tertiary-fixed-dim": "#bec6e0",
+            "primary-container": "#15803d",
+            "surface-container-lowest": "#ffffff",
+            "surface-dim": "#d8dbd8",
+            "tertiary-container": "#676f86",
+            "on-primary-container": "#d3ffd5",
+            "tertiary-fixed": "#dae2fd",
+            "inverse-primary": "#79db8d",
+            "error": "#ba1a1a",
+            "surface-bright": "#f8faf7",
+            "on-tertiary-fixed-variant": "#3f465c",
+            "primary-fixed-dim": "#79db8d",
+            "on-tertiary-fixed": "#131b2e",
+            "background": "#f8faf7",
+            "on-primary-fixed-variant": "#005323"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "2xl": "1rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "sans": ["Inter", "Noto Sans Tamil", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    @layer base {
+      html, body {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f6f3;
+      }
+      body {
+        font-family: 'Inter', 'Noto Sans Tamil', sans-serif;
+        min-height: 100vh;
+      }
+      .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+      .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+    }
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined' !important;
+      font-weight: normal;
+      font-style: normal;
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+      vertical-align: middle;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .farm-pulse {
+      animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+  </style>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-[#f4f6f3] font-sans text-sm text-on-surface flex flex-col min-h-screen">
+
+  <!-- ==================== TOP RESPONSIVE HEADER ==================== -->
+  <header class="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl shadow-xs border-b border-outline-variant/30 pt-safe">
+    <div class="h-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo & Live AI Status -->
+      <div class="flex items-center gap-3 shrink-0">
+        <div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-white shadow-sm shrink-0">
+          <span class="material-symbols-outlined text-[24px]">agriculture</span>
+        </div>
+        <div class="flex flex-col min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span class="font-bold text-base text-primary tracking-tight">TerraPulse AI</span>
+            <span class="text-xs text-primary-container font-semibold">/ உழவன் AI</span>
+          </div>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span class="flex h-2 w-2 relative shrink-0">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            <span class="text-[11px] text-on-surface-variant">
+              AI Active • <strong class="text-primary font-semibold">Tamil &amp; Thanglish</strong>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation Links (Hidden on small mobile screens) -->
+      <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+        <button onclick="scrollToSection('section-overview')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-primary hover:bg-surface-container transition-colors flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">grid_view</span>
+          <span data-i18n="nav.dashboard">Dashboard</span>
+        </button>
+        <button onclick="scrollToSection('section-telemetry')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">sensors</span>
+          <span data-i18n="stitch.telemetry_title">Telemetry</span>
+        </button>
+        <button onclick="scrollToSection('section-irrigation')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">water_drop</span>
+          <span data-i18n="stitch.manual_controls">Irrigation</span>
+        </button>
+        <button onclick="scrollToSection('section-diagnostics')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">center_focus_strong</span>
+          <span>Scanner &amp; CCTV</span>
+        </button>
+        <button onclick="scrollToSection('ai-assistant-card')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px]">psychology_alt</span>
+          <span data-i18n="stitch.advisor_title">AI Advisor</span>
+        </button>
+      </nav>
+
+      <!-- Action Controls: Place Picker & Bilingual Switch -->
+      <div class="flex items-center gap-2.5 shrink-0">
+        <!-- Location Picker Button -->
+        <button onclick="openLocationModal()" class="px-3 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors flex items-center gap-1.5 text-on-surface border border-outline-variant/40 text-xs shadow-xs" title="Select Place / இடம் தேர்வு">
+          <span class="text-primary text-[14px]">📍</span>
+          <span id="hero-selected-place" class="font-semibold text-primary truncate max-w-[120px]">Coimbatore</span>
+          <span id="hero-live-temp" class="text-stone-500 font-mono text-[11px]">29°C</span>
+        </button>
+
+        <!-- Bilingual Language Toggle Button -->
+        <button id="langToggleBtn" onclick="toggleLanguageGlobal()" class="px-3 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors flex items-center gap-1 text-on-surface border border-outline-variant/40 text-xs font-semibold shadow-xs" title="Switch Language between Tamil and English">
+          <span id="langTA" class="text-primary font-bold">தமிழ்</span>
+          <span class="text-outline-variant">/</span>
+          <span id="langEN" class="text-on-surface-variant font-medium">EN</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==================== MAIN DESKTOP & LAPTOP DASHBOARD ==================== -->
+  <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24">
+
+    <!-- 12-Column Responsive Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- ==================== LEFT / MAIN COLUMN (8 COLS ON DESKTOP) ==================== -->
+      <div class="lg:col-span-8 flex flex-col gap-6">
+
+        <!-- Sector Identity & Live Weather Ribbon -->
+        <section id="section-overview" class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 relative overflow-hidden">
+          <div class="absolute -right-8 -bottom-8 w-44 h-44 rounded-full bg-primary-fixed/30 pointer-events-none blur-3xl"></div>
+          
+          <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 relative z-10">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary">
+                  <span class="material-symbols-outlined text-[16px]">potted_plant</span>
+                </span>
+                <span class="text-[11px] text-primary font-bold tracking-wide uppercase" data-i18n="stitch.active_unit">Active Field Unit</span>
+              </div>
+              <h1 class="text-xl sm:text-2xl text-on-surface font-extrabold tracking-tight truncate" id="dashboard-sector-title">
+                Coimbatore Smart Farm Sector 4B
+              </h1>
+              <p class="text-xs sm:text-sm text-on-surface-variant font-medium mt-1" id="dashboard-sector-subtitle">
+                கோயம்புத்தூர் வயல் பகுதி 4B • Live Telemetry Active
+              </p>
+            </div>
+            
+            <button onclick="openLocationModal()" class="shrink-0 self-start flex items-center bg-surface-container-low hover:bg-surface-container px-3.5 py-1.5 rounded-full text-on-surface shadow-xs transition-all text-xs font-semibold border border-outline-variant/30">
+              <span>📍 <span data-i18n="location.change_btn">Change Location</span></span>
+            </button>
+          </div>
+
+          <!-- Live Environmental Ribbon -->
+          <div class="mt-4 pt-2 bg-surface-container-low rounded-xl p-3.5 grid grid-cols-3 gap-2 text-on-surface border border-outline-variant/20">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="material-symbols-outlined text-secondary text-[26px] shrink-0" style="font-variation-settings: 'FILL' 1;">partly_cloudy_day</span>
+              <div class="truncate">
+                <span class="text-base font-bold" id="weather-temp-display">29°C</span>
+                <span class="text-xs text-on-surface-variant block truncate" id="weather-cond-display">Partly Sunny</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 min-w-0 border-x border-outline-variant/40 px-2 sm:px-4">
+              <span class="material-symbols-outlined text-primary text-[24px] shrink-0">humidity_mid</span>
+              <div class="truncate">
+                <span class="text-base font-bold"><span id="sensor-moisture">78</span>%</span>
+                <span class="text-xs text-on-surface-variant block truncate" data-i18n="sensor.moisture.title">Soil Moisture</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 min-w-0 pl-1 sm:pl-2">
+              <span class="material-symbols-outlined text-tertiary text-[24px] shrink-0">air</span>
+              <div class="truncate">
+                <span class="text-base font-bold"><span id="weather-wind-display">12</span> <span class="text-xs font-normal">km/h</span></span>
+                <span class="text-xs text-on-surface-variant block truncate">Wind Speed</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- AI Predictive Recommendation Callout Card -->
+        <section class="bg-gradient-to-br from-primary-fixed/30 via-surface-container-lowest to-surface-container-low rounded-2xl p-5 shadow-sm border border-primary/20 relative overflow-hidden">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shrink-0 shadow-md text-white">
+              <span class="material-symbols-outlined text-[26px]">smart_toy</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-primary">TerraPulse AI Advisor</span>
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed text-[11px] font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                  Real-time
+                </span>
+              </div>
+              <p class="text-sm text-on-surface font-semibold mt-1.5 leading-snug">
+                Reduce afternoon valve irrigation by 15% due to forecasted evening showers. Apply organic potassium booster tomorrow morning.
+              </p>
+              <p class="text-xs text-primary font-medium mt-1.5 leading-snug bg-primary/5 p-2.5 rounded-xl border border-primary/10">
+                இன்று மாலை மழை வாய்ப்பு உள்ளதால் பாசனத்தை 15% குறைக்கவும். நாளை காலை இயற்கை பொட்டாசியம் உரமிடவும்.
+              </p>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-3 mt-4 pt-1">
+            <button onclick="applyAiAdvice()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary text-xs font-bold flex items-center justify-center gap-2 shadow-sm active:scale-[0.98] transition-all">
+              <span class="material-symbols-outlined text-[18px]">check_circle</span>
+              <span class="truncate" data-i18n="stitch.apply_advice">Apply AI Advice / ஏற்கவும்</span>
+            </button>
+            <button onclick="scrollToSection('section-irrigation')" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-surface-container-lowest text-on-surface text-xs font-bold flex items-center justify-center gap-2 shadow-xs hover:bg-surface-container transition-colors active:scale-[0.98] border border-outline-variant/30">
+              <span class="material-symbols-outlined text-outline text-[18px]">tune</span>
+              <span class="truncate" data-i18n="stitch.manual_controls">Manual Controls / பாசனம்</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Soil & Field Telemetry 4-Card Bento Grid -->
+        <section id="section-telemetry" class="flex flex-col gap-3">
+          <div class="flex items-center justify-between px-1">
+            <div>
+              <h2 class="text-base font-bold text-on-surface" data-i18n="stitch.telemetry_title">Soil &amp; Field Telemetry</h2>
+              <p class="text-xs text-on-surface-variant" data-i18n="stitch.telemetry_sub">நேரடி அளவீடுகள் • 4 IoT Sensors Connected</p>
+            </div>
+            <span class="material-symbols-outlined text-outline text-[22px]">sensors</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+            <!-- Card 1: Soil pH -->
+            <div class="bg-surface-container-lowest p-4 rounded-xl shadow-xs border border-outline-variant/20 flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between">
+                <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+                  <span class="material-symbols-outlined text-[18px]">science</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full bg-primary-fixed/50 text-primary text-[10px] font-bold">Optimal / உகந்தது</span>
+              </div>
+              <div>
+                <div class="flex items-baseline gap-1">
+                  <span class="text-3xl font-extrabold text-on-surface" id="sensor-ph">6.8</span>
+                  <span class="text-xs text-on-surface-variant font-semibold">pH</span>
+                </div>
+                <p class="text-xs text-on-surface-variant truncate" data-i18n="stitch.ph_title">Soil Acidity (pH)</p>
+              </div>
+              <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden flex">
+                <div class="h-full bg-error-container w-[20%]"></div>
+                <div class="h-full bg-primary-container w-[50%] relative">
+                  <div class="w-1.5 h-full bg-surface-container-lowest mx-auto shadow-xs"></div>
+                </div>
+                <div class="h-full bg-secondary-container w-[30%]"></div>
+              </div>
+            </div>
+
+            <!-- Card 2: Groundwater / Tank Level -->
+            <div class="bg-surface-container-lowest p-4 rounded-xl shadow-xs border border-outline-variant/20 flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between">
+                <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+                  <span class="material-symbols-outlined text-[18px]">waves</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full bg-primary-fixed/50 text-primary text-[10px] font-bold">Ample / போதுமானது</span>
+              </div>
+              <div>
+                <div class="flex items-baseline gap-1">
+                  <span class="text-3xl font-extrabold text-on-surface" id="sensor-tank">1250</span>
+                  <span class="text-xs text-on-surface-variant font-semibold">L</span>
+                </div>
+                <p class="text-xs text-on-surface-variant truncate" data-i18n="stitch.water_title">Water Tank Level</p>
+              </div>
+              <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
+                <div class="h-full bg-primary rounded-full transition-all duration-500" style="width: 83%;"></div>
+              </div>
+            </div>
+
+            <!-- Card 3: Soil Temperature -->
+            <div class="bg-surface-container-lowest p-4 rounded-xl shadow-xs border border-outline-variant/20 flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between">
+                <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+                  <span class="material-symbols-outlined text-[18px]">thermostat</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full bg-secondary-fixed/50 text-secondary text-[10px] font-bold">Optimal / உகந்தது</span>
+              </div>
+              <div>
+                <div class="flex items-baseline gap-1">
+                  <span class="text-3xl font-extrabold text-on-surface" id="sensor-temp">24</span>
+                  <span class="text-xs text-on-surface-variant font-semibold">°C</span>
+                </div>
+                <p class="text-xs text-on-surface-variant truncate" data-i18n="stitch.temp_title">Soil Temp</p>
+              </div>
+              <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
+                <div class="h-full bg-secondary rounded-full transition-all duration-500" style="width: 58%;"></div>
+              </div>
+            </div>
+
+            <!-- Card 4: Pest Threat Score -->
+            <div class="bg-surface-container-lowest p-4 rounded-xl shadow-xs border border-outline-variant/20 flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between">
+                <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+                  <span class="material-symbols-outlined text-[18px]">bug_report</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full bg-primary-fixed/50 text-primary text-[10px] font-bold">Low / குறைவு</span>
+              </div>
+              <div>
+                <div class="flex items-baseline gap-1">
+                  <span class="text-3xl font-extrabold text-primary">12</span>
+                  <span class="text-xs text-on-surface-variant font-semibold">%</span>
+                </div>
+                <p class="text-xs text-on-surface-variant truncate" data-i18n="stitch.pest_title">Pest Threat</p>
+              </div>
+              <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden">
+                <div class="h-full bg-primary rounded-full transition-all duration-500" style="width: 12%;"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Automated Precision Agri Sliders & Valve Actuators -->
+        <section id="section-irrigation" class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-base font-bold text-on-surface" data-i18n="stitch.auto_params">Automated Crop &amp; Soil Parameters</h2>
+              <p class="text-xs text-on-surface-variant">தானியங்கி அளவுருக்கள் மற்றும் பாசனக் கட்டுப்பாடு</p>
+            </div>
+            <span class="material-symbols-outlined text-primary text-[24px]">tune</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Slider 1: Soil Moisture Target -->
+            <div class="flex flex-col gap-2 p-3.5 rounded-xl bg-surface-container-low/70 border border-outline-variant/10">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-primary text-[18px]">water_drop</span>
+                    <span class="text-xs font-bold text-on-surface" data-i18n="stitch.moisture_target">Soil Moisture Target</span>
+                  </div>
+                  <p class="text-[11px] text-on-surface-variant">மண் ஈரப்பதம் இலக்கு</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded-full bg-primary text-on-primary text-[10px] font-bold" id="moistureStatusTag">Optimal / உகந்தது</span>
+                  <span class="text-base text-primary font-bold" id="moistureValDisplay">68%</span>
+                </div>
+              </div>
+              <div class="py-1">
+                <input class="w-full h-2.5 bg-surface-container rounded-lg appearance-none cursor-pointer accent-primary" id="moistureSlider" max="90" min="20" type="range" value="68"/>
+              </div>
+              <div class="flex justify-between items-center text-on-surface-variant text-[11px] px-0.5">
+                <span>Min: 20% (Dry)</span>
+                <span class="text-primary font-semibold">Ideal: 65-78%</span>
+                <span>Max: 90% (Saturated)</span>
+              </div>
+            </div>
+
+            <!-- Slider 2: Drip Irrigation Rate with AI Auto-Tune -->
+            <div class="flex flex-col gap-2 p-3.5 rounded-xl bg-surface-container-low/70 border border-outline-variant/10">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-primary text-[18px]">opacity</span>
+                    <span class="text-xs font-bold text-on-surface" data-i18n="stitch.drip_rate">Drip Irrigation Rate</span>
+                  </div>
+                  <p class="text-[11px] text-on-surface-variant">சொட்டு நீர் பாசன வேகம்</p>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="text-base text-on-surface font-bold" id="dripValDisplay">2.8</span>
+                  <span class="text-xs text-on-surface-variant font-medium">L/hr</span>
+                </div>
+              </div>
+              <div class="py-1">
+                <input class="w-full h-2.5 bg-surface-container rounded-lg appearance-none cursor-pointer accent-primary" id="dripSlider" max="5.0" min="0.5" step="0.1" type="range" value="2.8"/>
+              </div>
+              <div class="flex items-center justify-between pt-1">
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input checked="" class="w-4 h-4 rounded text-primary accent-primary" id="aiAutoTune" type="checkbox"/>
+                  <span class="text-xs text-on-surface font-semibold">Smart AI Auto-Tune</span>
+                </label>
+                <span class="text-xs text-primary font-semibold flex items-center gap-0.5">
+                  <span class="material-symbols-outlined text-[14px]">auto_awesome</span> Active
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slider 3: NPK Nutrient Injection -->
+          <div class="flex flex-col gap-2 p-3.5 rounded-xl bg-surface-container-low/70 border border-outline-variant/10">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-secondary text-[18px]">grain</span>
+                  <span class="text-xs font-bold text-on-surface" data-i18n="stitch.npk_injection">NPK Nutrient Injection</span>
+                </div>
+                <p class="text-[11px] text-on-surface-variant">உரக்கலவை உட்செலுத்துதல் (N-P-K)</p>
+              </div>
+              <div class="text-right">
+                <span class="text-[10px] font-bold text-secondary bg-secondary-fixed/50 px-2 py-0.5 rounded-full" id="npkStatus">Balanced / சரிவிகிதம்</span>
+                <span class="text-base text-on-surface font-bold ml-2" id="npkValDisplay">40%</span>
+              </div>
+            </div>
+            <div class="py-1">
+              <input class="w-full h-2.5 bg-surface-container rounded-lg appearance-none cursor-pointer accent-secondary" id="npkSlider" max="100" min="10" step="10" type="range" value="40"/>
+            </div>
+            <div class="flex items-center justify-between gap-1 pt-1 text-xs">
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container font-medium text-on-surface">Nitrogen: 120kg</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container font-medium text-on-surface">Phos: 60kg</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container font-medium text-on-surface">Potas: 60kg</span>
+            </div>
+          </div>
+
+          <!-- Actuator Valves Controls -->
+          <div class="pt-2">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold text-on-surface uppercase tracking-wider">Actuator Valves / பாசன வால்வுகள்</h3>
+              <span class="text-xs text-primary font-semibold font-mono">2 Valves Online</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="valves-container">
+              <!-- Valve 1 -->
+              <div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/20 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <span class="text-2xl">🚰</span>
+                  <div>
+                    <h4 class="font-bold text-xs text-on-surface">Main Irrigation Valve</h4>
+                    <p class="text-[11px] text-on-surface-variant">Tomato Field Zone A • 15 L/min</p>
+                  </div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" checked onchange="toggleValve(1, this.checked)" class="sr-only peer">
+                  <div class="w-11 h-6 bg-stone-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </label>
+              </div>
+
+              <!-- Valve 2 -->
+              <div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/20 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <span class="text-2xl">🌱</span>
+                  <div>
+                    <h4 class="font-bold text-xs text-on-surface">Secondary Drip Valve</h4>
+                    <p class="text-[11px] text-on-surface-variant">Vegetable Field Zone B • 8 L/min</p>
+                  </div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" onchange="toggleValve(2, this.checked)" class="sr-only peer">
+                  <div class="w-11 h-6 bg-stone-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Visual AI Diagnostics & Real Farm CCTV Center (Side-by-side 2 cols on PC) -->
+        <section id="section-diagnostics" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          
+          <!-- AI Vision Crop Health Scanner -->
+          <div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/20 flex flex-col justify-between gap-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-on-surface" data-i18n="stitch.scanner_title">AI Crop Health Scanner</h3>
+                <p class="text-[11px] text-on-surface-variant">பயிர் நோய் பகுப்பாய்வு &amp; பட ஆய்வு</p>
+              </div>
+              <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-[18px]">center_focus_strong</span>
+              </div>
+            </div>
+
+            <!-- Scanned Leaf Photo with AI Bounding Box overlay -->
+            <div class="relative w-full rounded-xl overflow-hidden bg-surface-container-high aspect-[16/10] shadow-inner group">
+              <img class="w-full h-full object-cover" alt="Leaf inspection" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCK5kYZmzEou8HpbGr4Sfp4JBpbLb6UvC3s387sODgZy2NjSsYEievo5dW54AvrosJ0TGrfqqfInLU48XNYq30DEToo3-2f59yi9EEX8ha8FsTZdup9WtNVEw8nW4WBp6S5DF2DZTgvefPhlqoZ3GARYkg1qfdd6xQ6OyLE-_21uXxRpwDFMiZWSKgVRB6VjD4RqKi2xf679eJoleD58InFAjJAtkX8JfE5-Zqq6yLh5k2hpbHqevi-"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-on-surface/90 via-transparent to-transparent flex flex-col justify-between p-3 pointer-events-none">
+                <div class="flex justify-between items-start">
+                  <div class="bg-surface-container-lowest/90 backdrop-blur-md px-2 py-0.5 rounded-lg flex items-center gap-1.5 shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+                    <span class="text-[11px] text-on-surface font-bold">Tomato / Paddy Leaf</span>
+                  </div>
+                  <span class="bg-primary px-2 py-0.5 rounded-full text-on-primary text-[10px] font-bold shadow-xs">
+                    94.2% Confidence
+                  </span>
+                </div>
+                <div class="mx-auto my-auto w-3/4 h-2/3 border-2 border-dashed border-primary-fixed rounded-lg relative flex items-start justify-end p-1">
+                  <span class="bg-primary/90 text-on-primary text-[10px] px-1.5 py-0.5 rounded shadow-sm">Target Area</span>
+                </div>
+                <div class="bg-surface-container-lowest/95 backdrop-blur-md p-2 rounded-xl text-on-surface shadow-md">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-1">
+                      <span class="material-symbols-outlined text-secondary text-[16px]">warning</span>
+                      <span class="text-xs font-bold text-on-surface">Nitrogen Chlorosis (Early)</span>
+                    </div>
+                    <span class="text-secondary text-[10px] font-bold">Mild</span>
+                  </div>
+                  <p class="text-[10px] text-on-surface-variant mt-0.5">
+                    நுண்ணூட்ட குறைபாடு • 19:19:19 உரம் தெளிக்கவும்.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Scanner Actions -->
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button onclick="triggerLeafScanner()" class="min-h-[40px] px-3 py-2 rounded-xl bg-primary text-on-primary text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.98] transition-transform">
+                <span class="material-symbols-outlined text-[18px]">photo_camera</span>
+                <span class="truncate" data-i18n="stitch.scanner_btn">Scan Leaf / படம் எடு</span>
+              </button>
+              <button onclick="triggerLeafUpload()" class="min-h-[40px] px-3 py-2 rounded-xl bg-surface-container text-on-surface text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-surface-container-high transition-colors active:scale-[0.98] border border-outline-variant/30">
+                <span class="material-symbols-outlined text-primary text-[18px]">cloud_upload</span>
+                <span class="truncate" data-i18n="stitch.upload_btn">Upload / பதிவேற்று</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Real Farm CCTV Monitor -->
+          <div id="cctv-card" class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/20 flex flex-col justify-between gap-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-on-surface" data-i18n="stitch.cctv_title">Real CCTV &amp; Crop Monitor</h3>
+                <p class="text-[11px] text-on-surface-variant">தோட்டத்து நேரலை கண்காணிப்பு</p>
+              </div>
+              <span id="cctv-status-badge" class="text-[11px] bg-stone-100 text-stone-600 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider flex items-center space-x-1 border border-stone-200">
+                <span id="cctv-status-dot" class="w-2 h-2 rounded-full bg-stone-400"></span>
+                <span id="cctv-status-text">DISCONNECTED</span>
+              </span>
+            </div>
+
+            <!-- CCTV Screen with TV Static Canvas -->
+            <div class="relative w-full aspect-[16/10] bg-black rounded-xl overflow-hidden shadow-inner flex items-center justify-center">
+              <canvas id="cctv-static-canvas" class="absolute inset-0 w-full h-full object-cover z-0"></canvas>
+              <video id="cctv-video-stream" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover hidden z-10"></video>
+              
+              <!-- TV Disconnected Overlay -->
+              <div id="cctv-disconnected-overlay" class="relative z-20 flex flex-col items-center justify-center text-center p-3">
+                <div class="bg-black/70 backdrop-blur-md px-3.5 py-1.5 rounded-lg border border-white/20 mb-2.5 shadow-lg">
+                  <span class="text-red-400 font-mono text-xs tracking-widest font-bold animate-pulse">NO VIDEO SIGNAL</span>
+                  <p class="text-stone-300 text-[10px] mt-0.5">Camera is not connected</p>
+                </div>
+                <button id="btn-open-cctv-modal" onclick="openCctvConnectModal()" class="px-3.5 py-1.5 rounded-lg bg-primary hover:bg-primary-container text-white text-xs font-bold flex items-center space-x-1.5 shadow-md active:scale-95 transition-all">
+                  <span>📹</span>
+                  <span>Connect Real CCTV / Webcam</span>
+                </button>
+              </div>
+
+              <!-- Live Feed HUD Overlay -->
+              <div id="cctv-live-hud" class="absolute inset-0 z-20 p-2.5 pointer-events-none flex flex-col justify-between hidden">
+                <div class="flex items-center justify-between">
+                  <span id="cctv-cam-label" class="bg-black/60 backdrop-blur text-white text-[10px] font-mono px-2 py-0.5 rounded">
+                    Webcam • 1080p
+                  </span>
+                  <span class="bg-red-600/90 text-white text-[10px] font-mono font-bold px-2 py-0.5 rounded flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> REC
+                  </span>
+                </div>
+                <div class="flex items-center justify-between text-[10px] font-mono text-white/80 bg-black/50 backdrop-blur p-1 rounded">
+                  <span>FOV: Zone A • Tomato Bed</span>
+                  <span>FPS: 30 • Bitrate: 4.2 Mbps</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-[11px] text-on-surface-variant truncate">Connect webcam or RTSP/HTTP feed</span>
+              <button id="btn-disconnect-cctv" onclick="disconnectRealCctv()" class="hidden px-2.5 py-1 rounded-lg bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold border border-red-200 transition-colors">
+                Disconnect
+              </button>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+
+      <!-- ==================== RIGHT COLUMN: AGRI ADVISOR AI CHAT (4 COLS ON DESKTOP) ==================== -->
+      <div class="lg:col-span-4 flex flex-col gap-6">
+
+        <!-- Sticky AI Chat & Voice Assistant Card -->
+        <section id="ai-assistant-card" class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-3 lg:sticky lg:top-20">
+          
+          <!-- AI Header -->
+          <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-sm">
+                <span class="material-symbols-outlined text-[24px]">psychology_alt</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="text-sm font-bold text-on-surface" data-i18n="stitch.advisor_title">AgroSmart AI Advisor</h3>
+                  <span class="text-[10px] bg-primary/10 text-primary font-bold px-2 py-0.5 rounded-full">Groq / Gemini</span>
+                </div>
+                <p class="text-[11px] text-on-surface-variant" data-i18n="stitch.advisor_sub">Understands Tamil &amp; Thanglish</p>
+              </div>
+            </div>
+            
+            <!-- Global Read Aloud Replay Button -->
+            <button onclick="replayLastSpeech()" class="px-2.5 py-1 text-xs rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-semibold flex items-center gap-1 border border-outline-variant/30 transition-all shrink-0" title="Replay Last Speech">
+              <span>🔊</span>
+              <span class="hidden sm:inline" data-i18n="stitch.read_aloud">Read Aloud</span>
+            </button>
+          </div>
+
+          <!-- Chat Messages Container -->
+          <div id="chat-messages" class="h-96 overflow-y-auto space-y-3 p-3 bg-surface-container-low/50 rounded-xl border border-outline-variant/15 flex flex-col">
+            <!-- Initial AI Welcome Bubble -->
+            <div class="bg-surface-container-lowest text-on-surface p-3.5 rounded-xl border border-primary/20 max-w-[95%] shadow-2xs">
+              <div class="flex items-center space-x-2 text-xs font-semibold text-primary mb-1.5">
+                <span>🤖 உழவன் தோழன் AI</span>
+                <span class="text-[10px] text-on-surface-variant font-normal">Just now</span>
+              </div>
+              <div class="text-xs sm:text-sm leading-relaxed" id="initial-ai-greeting">
+                வணக்கம் உழவரே! நான் உங்கள் உழவன் ஏஐ உதவியாளர். உங்கள் தோட்டத்தின் மண் ஈரப்பதம், மழை நிலவரம், உரம், பூச்சி மேலாண்மை அல்லது தக்காளி மண்டி விலை பற்றி தமிழில் அல்லது Thanglish-ல் கேளுங்கள்.
+              </div>
+              <div class="mt-2.5 pt-2 border-t border-outline-variant/20 flex flex-wrap items-center gap-2">
+                <button onclick="speakText('வணக்கம் உழவரே! நான் உங்கள் உழவன் ஏஐ உதவியாளர். உங்கள் தோட்டத்தின் மண் ஈரப்பதம், மழை நிலவரம், உரம், பூச்சி மேலாண்மை அல்லது தக்காளி மண்டி விலை பற்றி தமிழில் அல்லது Thanglish-ல் கேளுங்கள்.', currentSiteLanguage)" class="px-2.5 py-1 text-[11px] rounded bg-surface-container-low hover:bg-surface-container text-primary border border-outline-variant/30 font-semibold flex items-center space-x-1 shadow-2xs transition-all">
+                  <span>🔊</span>
+                  <span data-i18n="stitch.read_aloud">மீண்டும் வாசி (Read Aloud)</span>
+                </button>
+                <button onclick="stopSpeech()" class="px-2.5 py-1 text-[11px] rounded bg-white hover:bg-red-50 text-red-600 border border-stone-200 font-semibold flex items-center space-x-1 shadow-2xs transition-all">
+                  <span>⏹️</span>
+                  <span data-i18n="stitch.stop">நிறுத்து (Stop)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Thanglish & Tamil Prompt Chips -->
+          <div class="flex flex-wrap gap-1.5 pt-1">
+            <button onclick="quickPrompt('soil')" class="text-xs bg-surface-container hover:bg-surface-container-high text-on-surface px-2.5 py-1 rounded-full border border-outline-variant/30 transition-colors flex items-center space-x-1">
+              <span>🌱</span><span>Thanni paachalama?</span>
+            </button>
+            <button onclick="quickPrompt('weather')" class="text-xs bg-surface-container hover:bg-surface-container-high text-on-surface px-2.5 py-1 rounded-full border border-outline-variant/30 transition-colors flex items-center space-x-1">
+              <span>🌧️</span><span>Nalaiki mazhai varuma?</span>
+            </button>
+            <button onclick="quickPrompt('pest')" class="text-xs bg-surface-container hover:bg-surface-container-high text-on-surface px-2.5 py-1 rounded-full border border-outline-variant/30 transition-colors flex items-center space-x-1">
+              <span>🐛</span><span>Poochi marunthu?</span>
+            </button>
+            <button onclick="quickPrompt('harvest')" class="text-xs bg-surface-container hover:bg-surface-container-high text-on-surface px-2.5 py-1 rounded-full border border-outline-variant/30 transition-colors flex items-center space-x-1">
+              <span>🍅</span><span>Thakkali eppo arukalam?</span>
+            </button>
+            <button onclick="quickPrompt('price')" class="text-xs bg-surface-container hover:bg-surface-container-high text-on-surface px-2.5 py-1 rounded-full border border-outline-variant/30 transition-colors flex items-center space-x-1">
+              <span>💰</span><span>Thakkali rate enna ippo?</span>
+            </button>
+            <button onclick="quickPrompt('fertilizer')" class="text-xs bg-surface-container hover:bg-surface-container-high text-on-surface px-2.5 py-1 rounded-full border border-outline-variant/30 transition-colors flex items-center space-x-1">
+              <span>🧪</span><span>Enna uram podalam?</span>
+            </button>
+          </div>
+
+          <!-- Chat Input Form & Mic Button -->
+          <div class="flex items-center space-x-2 pt-1">
+            <input id="chat-input" type="text" placeholder="Ask your question in Tamil, Thanglish, or English..." data-i18n-ph="ai.placeholder" onkeypress="if(event.key === 'Enter') sendChatMessage()" class="flex-1 px-3.5 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface focus:outline-none focus:ring-2 focus:ring-primary text-xs transition-all"/>
+            <button id="mic-btn" onclick="toggleVoiceRecording()" class="p-2.5 rounded-xl border border-outline-variant/40 hover:bg-surface-container transition-colors text-primary flex items-center justify-center shrink-0" title="Voice Input (Tamil / English)">
+              <span class="material-symbols-outlined text-[20px]">mic</span>
+            </button>
+            <button onclick="sendChatMessage()" class="px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-xs flex items-center space-x-1.5 shadow-sm active:scale-95 transition-all shrink-0">
+              <span data-i18n="ai.send">Send</span>
+              <span class="material-symbols-outlined text-[16px]">send</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Cauvery Delta & TNAU Agronomy Feed Card -->
+        <section class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/20 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-[20px]">forum</span>
+              <h3 class="text-xs font-bold text-on-surface">TNAU Agronomy Insights</h3>
+            </div>
+            <span class="text-[10px] text-primary font-bold">Live Updates</span>
+          </div>
+          <div class="bg-surface-container-low rounded-xl p-3 flex gap-3 items-start border border-outline-variant/10">
+            <div class="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-surface-container-high">
+              <img class="w-full h-full object-cover" alt="TNAU Agronomist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuL8Nvx7pZJS4cMQLlfDKfMlYjp_RMSoa-G_94ahlxuql4wKfR8ScDikEvDO1gvXJpxfiCZpttokx300Pppe6C9vqIRkzjsz9hPVddmWp4uENSbegpHAf5-6CHVx4oC0g6WPNeEL0hnByPrGZA3ckGl56DutSE2lox71bN2zXrXu5hG8Ox2itylpOCVTxZPwSJjCdWJuBlsseSPs4N3pi0z3gIkv0E6FJCJETcrqwEPvlQrahojcRg"/>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-on-surface truncate">Dr. K. Swaminathan (TNAU)</span>
+                <span class="text-[10px] text-on-surface-variant">10m ago</span>
+              </div>
+              <p class="text-[11px] text-on-surface-variant mt-0.5 line-clamp-2">
+                "Humidity is optimal for tomato and paddy foliage in the region. Maintain 5cm water level and spray neem oil if leaf miner appears."
+              </p>
+              <p class="text-[11px] text-primary font-semibold mt-1 truncate">
+                "நீர் மட்டத்தை 5 செ.மீ பராமரிக்கவும். வேப்பெண்ணெய் தெளிக்கவும்."
+              </p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==================== MOBILE BOTTOM TAB NAVIGATION (MOBILE ONLY) ==================== -->
+  <nav class="lg:hidden fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/95 backdrop-blur-xl shadow-[0_-2px_12px_rgba(0,0,0,0.06)] border-t border-outline-variant/30 flex justify-center">
+    <div class="flex justify-around items-center h-16 w-full max-w-md px-2">
+      <button onclick="scrollToSection('section-overview')" class="flex flex-col items-center justify-center gap-0.5 min-w-[64px] py-1 text-primary font-bold transition-colors">
+        <span class="material-symbols-outlined text-[22px]">grid_view</span>
+        <span class="text-[10px] tracking-tight" data-i18n="nav.dashboard">Dashboard</span>
+      </button>
+
+      <button onclick="scrollToSection('section-diagnostics')" class="flex flex-col items-center justify-center gap-0.5 min-w-[64px] py-1 text-on-surface-variant hover:text-on-surface transition-colors">
+        <span class="material-symbols-outlined text-[22px]">center_focus_strong</span>
+        <span class="text-[10px] tracking-tight">Scanner</span>
+      </button>
+
+      <button onclick="scrollToSection('section-irrigation')" class="flex flex-col items-center justify-center gap-0.5 min-w-[64px] py-1 text-on-surface-variant hover:text-on-surface transition-colors">
+        <span class="material-symbols-outlined text-[22px]">water_drop</span>
+        <span class="text-[10px] tracking-tight" data-i18n="stitch.manual_controls">Irrigation</span>
+      </button>
+
+      <button onclick="scrollToSection('ai-assistant-card')" class="flex flex-col items-center justify-center gap-0.5 min-w-[64px] py-1 text-on-surface-variant hover:text-on-surface transition-colors">
+        <span class="material-symbols-outlined text-[22px]">psychology_alt</span>
+        <span class="text-[10px] tracking-tight" data-i18n="stitch.advisor_title">AI Advisor</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==================== LOCATION SELECTOR MODAL ==================== -->
+  <div id="location-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-surface-container-lowest text-on-surface rounded-2xl max-w-md w-full p-5 shadow-2xl border border-outline-variant/30 flex flex-col space-y-4">
+      <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+        <div class="flex items-center space-x-2">
+          <span class="text-xl">📍</span>
+          <div>
+            <h3 class="font-bold text-sm text-on-surface" data-i18n="location.modal_title">Choose Your Farm Location</h3>
+            <p class="text-xs text-on-surface-variant">உங்கள் தோட்டத்தின் ஊரைத் தேர்ந்தெடுக்கவும்</p>
+          </div>
+        </div>
+        <button onclick="closeLocationModal()" class="text-stone-400 hover:text-stone-700">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="relative">
+        <input type="text" id="location-search-input" oninput="handleLocationSearch(this.value)" placeholder="Search any city or village (e.g., Coimbatore, Thanjavur, Madurai)..." data-i18n-ph="location.search_ph" class="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-xs focus:outline-none focus:ring-2 focus:ring-primary"/>
+        <div id="location-search-results" class="mt-2 max-h-48 overflow-y-auto rounded-lg border border-outline-variant/20 divide-y divide-outline-variant/10 hidden bg-white shadow-md"></div>
+      </div>
+
+      <div>
+        <span class="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wider block mb-2" data-i18n="location.popular">Popular Tamil Nadu Agricultural Hubs:</span>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <button onclick="selectPlace('Coimbatore', 11.0168, 76.9558, 'கோயம்புத்தூர்')" class="p-2 rounded-lg bg-surface-container-low hover:bg-surface-container border border-outline-variant/20 text-left font-medium">📍 Coimbatore (கோவை)</button>
+          <button onclick="selectPlace('Thanjavur', 10.7870, 79.1378, 'தஞ்சாவூர்')" class="p-2 rounded-lg bg-surface-container-low hover:bg-surface-container border border-outline-variant/20 text-left font-medium">📍 Thanjavur (தஞ்சை)</button>
+          <button onclick="selectPlace('Madurai', 9.9252, 78.1198, 'மதுரை')" class="p-2 rounded-lg bg-surface-container-low hover:bg-surface-container border border-outline-variant/20 text-left font-medium">📍 Madurai (மதுரை)</button>
+          <button onclick="selectPlace('Salem', 11.6643, 78.1460, 'சேலம்')" class="p-2 rounded-lg bg-surface-container-low hover:bg-surface-container border border-outline-variant/20 text-left font-medium">📍 Salem (சேலம்)</button>
+          <button onclick="selectPlace('Erode', 11.3410, 77.7172, 'ஈரோடு')" class="p-2 rounded-lg bg-surface-container-low hover:bg-surface-container border border-outline-variant/20 text-left font-medium">📍 Erode (ஈரோடு)</button>
+          <button onclick="selectPlace('Tiruchirappalli', 10.7905, 78.7047, 'திருச்சி')" class="p-2 rounded-lg bg-surface-container-low hover:bg-surface-container border border-outline-variant/20 text-left font-medium">📍 Trichy (திருச்சி)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CCTV REAL CONNECTION MODAL ==================== -->
+  <div id="cctv-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-surface-container-lowest text-on-surface rounded-2xl max-w-md w-full p-5 shadow-2xl border border-outline-variant/30 flex flex-col space-y-4">
+      <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+        <div class="flex items-center space-x-2">
+          <span class="text-xl">📹</span>
+          <div>
+            <h3 class="font-bold text-sm text-on-surface" data-i18n="cctv.modal_title">Connect Real CCTV / Camera</h3>
+            <p class="text-xs text-on-surface-variant" data-i18n="cctv.modal_desc">தோட்டத்து கேமரா அல்லது வெப்கேமை இணைக்கவும்</p>
+          </div>
+        </div>
+        <button onclick="closeCctvConnectModal()" class="text-stone-400 hover:text-stone-700">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Method 1: Local Device Webcam -->
+      <div class="p-3.5 rounded-xl bg-surface-container-low border border-primary/20 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-xs text-primary flex items-center space-x-1">
+            <span>📷</span>
+            <span>Option 1: Device Camera / Phone Webcam</span>
+          </span>
+          <span class="text-[10px] bg-primary-fixed/60 text-primary font-bold px-2 py-0.5 rounded">Instant Live</span>
+        </div>
+        <p class="text-xs text-on-surface-variant">
+          Streams real video directly from this device's camera into the dashboard with AI analysis.
+        </p>
+        <button onclick="connectLocalWebcam()" class="w-full py-2 bg-primary hover:bg-primary-container text-white rounded-lg text-xs font-semibold shadow-sm transition-all flex items-center justify-center space-x-1">
+          <span data-i18n="cctv.webcam_btn">Start Camera Feed</span>
+        </button>
+      </div>
+
+      <!-- Method 2: IP Stream URL -->
+      <div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/20 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-xs text-on-surface flex items-center space-x-1">
+            <span>🌐</span>
+            <span>Option 2: IP Camera Stream URL</span>
+          </span>
+          <span class="text-[10px] bg-stone-200 text-stone-700 font-bold px-2 py-0.5 rounded">RTSP / HTTP</span>
+        </div>
+        <input type="text" id="cctv-cam-name-input" placeholder="Camera Name (e.g. North Gate Cam)" class="w-full px-3 py-2 rounded-lg border border-outline-variant/30 bg-surface-container-lowest text-xs text-on-surface"/>
+        <input type="text" id="cctv-stream-url-input" placeholder="Video Stream URL (e.g. https://... or rtsp://...)" data-i18n-ph="cctv.stream_ph" class="w-full px-3 py-2 rounded-lg border border-outline-variant/30 bg-surface-container-lowest text-xs text-on-surface"/>
+        <button onclick="connectStreamUrl()" class="w-full py-2 bg-stone-800 hover:bg-stone-900 text-white rounded-lg text-xs font-semibold shadow-sm transition-all">
+          <span data-i18n="cctv.stream_btn">Connect Stream</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast Container -->
+  <div id="toastNotification" class="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none max-w-sm">
+    <div class="bg-inverse-surface text-inverse-on-surface px-4 py-3 rounded-xl shadow-xl flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary-fixed text-[20px]">task_alt</span>
+        <span class="text-xs font-medium" id="toastMessage">Settings updated successfully</span>
+      </div>
+      <button onclick="hideToast()" class="text-inverse-on-surface/70 hover:text-inverse-on-surface">
+        <span class="material-symbols-outlined text-[16px]">close</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- App Core Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/translations.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    // Smooth scrolling to sections
+    function scrollToSection(sectionId) {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    // Toast helper
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      const toastMessage = document.getElementById('toastMessage');
+      if (!toast) return;
+      toastMessage.textContent = msg;
+      toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(hideToast, 3500);
+    }
+
+    function hideToast() {
+      const toast = document.getElementById('toastNotification');
+      if (!toast) return;
+      toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+      toast.classList.remove('translate-y-0', 'opacity-100');
+    }
+
+    function applyAiAdvice() {
+      const dripSlider = document.getElementById('dripSlider');
+      const dripDisplay = document.getElementById('dripValDisplay');
+      if (dripSlider && dripDisplay) {
+        dripSlider.value = 2.4;
+        dripDisplay.textContent = '2.4';
+      }
+      showToast('AI Advice Applied: Valve reduced by 15% / பாசனம் குறைக்கப்பட்டது');
+    }
+
+    function triggerLeafScanner() {
+      showToast('Opening Camera Leaf Scanner... / கேமரா திறக்கப்படுகிறது');
+    }
+
+    function triggerLeafUpload() {
+      showToast('Select Leaf Photo for AI Diagnosis / மாதிரி கோப்பு தேர்வு');
+    }
+
+    function replayLastSpeech() {
+      if (window.lastSpokenText) {
+        speakText(window.lastSpokenText, currentSiteLanguage);
+      } else {
+        const msg = currentSiteLanguage === 'en' 
+          ? "Vanakkam farmer! How can I assist your crop today?" 
+          : "வணக்கம் உழவரே! உங்கள் தோட்டத்துக்கு என்ன ஆலோசனை வேண்டும்?";
+        speakText(msg, currentSiteLanguage);
+      }
+    }
+
+    // Precision Agri Slider listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      // Ensure initial language is applied
+      if (typeof applyLanguage === 'function') {
+        applyLanguage(currentSiteLanguage || 'ta');
+      }
+
+      const moistureSlider = document.getElementById('moistureSlider');
+      const moistureDisplay = document.getElementById('moistureValDisplay');
+      const moistureStatusTag = document.getElementById('moistureStatusTag');
+
+      const dripSlider = document.getElementById('dripSlider');
+      const dripDisplay = document.getElementById('dripValDisplay');
+
+      const npkSlider = document.getElementById('npkSlider');
+      const npkDisplay = document.getElementById('npkValDisplay');
+      const npkStatus = document.getElementById('npkStatus');
+
+      if (moistureSlider) {
+        moistureSlider.addEventListener('input', (e) => {
+          const val = parseInt(e.target.value);
+          if (moistureDisplay) moistureDisplay.textContent = val + '%';
+          if (moistureStatusTag) {
+            if (val < 50) {
+              moistureStatusTag.textContent = 'Dry / வறண்டது';
+              moistureStatusTag.className = 'px-2 py-0.5 rounded-full bg-secondary text-on-secondary text-[10px] font-bold';
+            } else if (val > 80) {
+              moistureStatusTag.textContent = 'High / மிகுதி';
+              moistureStatusTag.className = 'px-2 py-0.5 rounded-full bg-tertiary text-on-tertiary text-[10px] font-bold';
+            } else {
+              moistureStatusTag.textContent = 'Optimal / உகந்தது';
+              moistureStatusTag.className = 'px-2 py-0.5 rounded-full bg-primary text-on-primary text-[10px] font-bold';
+            }
+          }
+        });
+      }
+
+      if (dripSlider && dripDisplay) {
+        dripSlider.addEventListener('input', (e) => {
+          dripDisplay.textContent = parseFloat(e.target.value).toFixed(1);
+        });
+      }
+
+      if (npkSlider && npkDisplay) {
+        npkSlider.addEventListener('input', (e) => {
+          const val = parseInt(e.target.value);
+          npkDisplay.textContent = val + '%';
+          if (npkStatus) {
+            if (val < 30) npkStatus.textContent = 'Low / குறைவு';
+            else if (val > 70) npkStatus.textContent = 'High Dosing / செறிவு';
+            else npkStatus.textContent = 'Balanced / சரிவிகிதம்';
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
