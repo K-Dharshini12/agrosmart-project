@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
 import os
 
 from .database import engine, Base
@@ -55,11 +55,20 @@ def healthcheck():
         "status": "healthy",
         "message": "AgroSmart / Ulavan Connect AI API is running.",
         "documentation": "/docs",
+        "portal": "/portal",
         "supported_languages": ["ta (Tamil & Thanglish)", "en (English)"],
         "version": "1.1.0"
     }
 
-# Mount Frontend directory so browsing http://localhost:8000 loads the full application seamlessly
+# Unified Portal — single entry point for everything
 frontend_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend")
+
+@app.get("/portal", response_class=HTMLResponse)
+def portal():
+    portal_path = os.path.join(frontend_dir, "portal.html")
+    with open(portal_path, "r", encoding="utf-8") as f:
+        return HTMLResponse(content=f.read())
+
+# Mount Frontend directory so browsing http://localhost:8000 loads the full application seamlessly
 if os.path.exists(frontend_dir):
     app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")

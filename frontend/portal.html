@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroSmart / Ulavan Connect AI — Project Portal</title>
+  <meta name="description" content="Unified portal for AgroSmart / Ulavan Connect AI — Smart Agriculture Platform with IoT, AI, and Marketplace." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+Tamil:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green-900: #052e16;
+      --green-800: #064e25;
+      --green-700: #0a6e30;
+      --green-600: #16a34a;
+      --green-500: #22c55e;
+      --green-400: #4ade80;
+      --green-300: #86efac;
+      --gold: #f7be1d;
+      --gold-light: #fde68a;
+      --bg: #030c06;
+      --surface: #0a1a0d;
+      --surface2: #0f2314;
+      --surface3: #162d1a;
+      --border: rgba(34,197,94,0.15);
+      --text: #e8f5e9;
+      --muted: #6b9e75;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 20%, rgba(22,163,74,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(247,190,29,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 50% 50%, rgba(10,110,48,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Grid lines background */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(34,197,94,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34,197,94,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--green-400);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .badge .dot {
+      width: 7px; height: 7px;
+      background: var(--green-400);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .header h1 {
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 900;
+      line-height: 1.05;
+      background: linear-gradient(135deg, #4ade80 0%, #22c55e 40%, #f7be1d 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .header .tamil {
+      font-family: 'Noto Sans Tamil', sans-serif;
+      font-size: clamp(18px, 3vw, 28px);
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .header p {
+      font-size: clamp(15px, 2vw, 18px);
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Status bar */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 64px;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .status-item .icon { font-size: 18px; }
+    .status-item .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green-400);
+      animation: pulse 2s infinite;
+      flex-shrink: 0;
+    }
+
+    /* Main grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    /* Card base */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.35s;
+      border-radius: 20px;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(34,197,94,0.4);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(34,197,94,0.2);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    /* Card sizes */
+    .card-lg { grid-column: span 7; }
+    .card-md { grid-column: span 5; }
+    .card-sm { grid-column: span 4; }
+
+    /* Card themes */
+    .card-app::before { background: radial-gradient(ellipse at top left, rgba(22,163,74,0.12), transparent 60%); }
+    .card-app { border-color: rgba(34,197,94,0.2); }
+
+    .card-api::before { background: radial-gradient(ellipse at top right, rgba(99,102,241,0.12), transparent 60%); }
+    .card-api { border-color: rgba(99,102,241,0.2); }
+
+    .card-docs::before { background: radial-gradient(ellipse at bottom left, rgba(247,190,29,0.1), transparent 60%); }
+    .card-docs { border-color: rgba(247,190,29,0.2); }
+
+    .card-db::before { background: radial-gradient(ellipse at top left, rgba(236,72,153,0.1), transparent 60%); }
+    .card-db { border-color: rgba(236,72,153,0.2); }
+
+    .card-health::before { background: radial-gradient(ellipse at center, rgba(14,165,233,0.1), transparent 60%); }
+    .card-health { border-color: rgba(14,165,233,0.2); }
+
+    /* Icon */
+    .card-icon {
+      width: 56px; height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    .icon-green { background: rgba(34,197,94,0.15); }
+    .icon-indigo { background: rgba(99,102,241,0.15); }
+    .icon-gold { background: rgba(247,190,29,0.15); }
+    .icon-pink { background: rgba(236,72,153,0.15); }
+    .icon-sky { background: rgba(14,165,233,0.15); }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .label-green { color: var(--green-400); }
+    .label-indigo { color: #a5b4fc; }
+    .label-gold { color: var(--gold); }
+    .label-pink { color: #f9a8d4; }
+    .label-sky { color: #7dd3fc; }
+
+    .card h2 {
+      font-size: clamp(18px, 2vw, 22px);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* Arrow */
+    .arrow {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--muted);
+      transition: all 0.3s;
+      flex-shrink: 0;
+    }
+
+    .card:hover .arrow {
+      background: rgba(34,197,94,0.15);
+      border-color: rgba(34,197,94,0.4);
+      color: var(--green-400);
+      transform: translate(3px, -3px);
+    }
+
+    /* Features list */
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .feature-tag {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    /* Endpoint list */
+    .endpoints {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .endpoint {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .method {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 5px;
+      flex-shrink: 0;
+    }
+
+    .method-get { background: rgba(34,197,94,0.2); color: #4ade80; }
+    .method-post { background: rgba(99,102,241,0.2); color: #a5b4fc; }
+    .method-ws { background: rgba(247,190,29,0.2); color: var(--gold); }
+
+    .endpoint-path { color: var(--muted); font-family: monospace; font-size: 12px; }
+
+    /* Health status */
+    .health-json {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(14,165,233,0.2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-family: monospace;
+      font-size: 12px;
+      line-height: 1.8;
+      color: #7dd3fc;
+    }
+
+    .json-key { color: #a5b4fc; }
+    .json-val-green { color: #4ade80; }
+    .json-val-str { color: #fde68a; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding-top: 48px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer p { color: var(--muted); font-size: 14px; }
+
+    .public-url-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 20px;
+      margin: 20px auto;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--green-300);
+      font-family: monospace;
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      background: rgba(34,197,94,0.15);
+      border: 1px solid rgba(34,197,94,0.3);
+      color: var(--green-400);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .copy-btn:hover { background: rgba(34,197,94,0.25); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .card-lg, .card-md, .card-sm { grid-column: span 12; }
+    }
+    @media (max-width: 600px) {
+      .container { padding: 40px 16px 60px; }
+      .card { padding: 24px; }
+    }
+
+    /* Floating particles */
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      border-radius: 50%;
+      animation: float linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-20px) rotate(720deg); opacity: 0; }
+    }
+
+    /* Version chip */
+    .version-chip {
+      display: inline-block;
+      background: rgba(247,190,29,0.1);
+      border: 1px solid rgba(247,190,29,0.3);
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating particles -->
+  <script>
+    const colors = ['rgba(34,197,94,0.3)', 'rgba(247,190,29,0.2)', 'rgba(22,163,74,0.2)'];
+    for (let i = 0; i < 18; i++) {
+      const el = document.createElement('div');
+      el.className = 'particle';
+      const size = Math.random() * 4 + 2;
+      el.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${Math.random()*100}vw;
+        background:${colors[i%3]};
+        animation-duration:${Math.random()*20+15}s;
+        animation-delay:${Math.random()*10}s;
+      `;
+      document.body.appendChild(el);
+    }
+  </script>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="badge">
+        <span class="dot"></span>
+        All Systems Live
+      </div>
+      <h1>AgroSmart AI</h1>
+      <div class="tamil">உழவன் Connect AI — ஸ்மார்ட் வேளாண்மை</div>
+      <p>Your unified project portal — access the app, API, docs, database, and health status from one place.</p>
+    </header>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <div class="status-item">
+        <span>🌱</span>
+        <span class="status-dot"></span>
+        <span>Backend: Online</span>
+      </div>
+      <div class="status-item">
+        <span>🗄️</span>
+        <span class="status-dot"></span>
+        <span>Database: Connected</span>
+      </div>
+      <div class="status-item">
+        <span>🤖</span>
+        <span class="status-dot"></span>
+        <span>AI: Groq Llama 3.3</span>
+      </div>
+      <div class="status-item">
+        <span>🌐</span>
+        <span class="status-dot"></span>
+        <span>v1.1.0</span>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid">
+
+      <!-- Main App -->
+      <a href="/" class="card card-app card-lg" id="card-app">
+        <div class="card-top">
+          <div>
+            <div class="card-label label-green">🌾 Main Application</div>
+            <h2>TerraPulse AI Frontend</h2>
+          </div>
+          <div class="arrow">↗</div>
+        </div>
+        <p>Full smart farming dashboard — IoT sensors, automated irrigation, AI voice assistant (Tamil & English), CCTV monitoring, and live weather data.</p>
+        <div class="features">
+          <span class="feature-tag">📡 Live Telemetry</span>
+          <span class="feature-tag">💧 Auto Irrigation</span>
+          <span class="feature-tag">🗣️ Voice AI (Tamil)</span>
+          <span class="feature-tag">🛒 Marketplace</span>
+          <span class="feature-tag">📹 CCTV</span>
+          <span class="feature-tag">🌤️ Weather</span>
+        </div>
+      </a>
+
+      <!-- API Docs -->
+      <a href="/docs" class="card card-docs card-md" id="card-docs">
+        <div class="card-top">
+          <div class="card-icon icon-gold">📖</div>
+          <div class="arrow">↗</div>
+        </div>
+        <div class="card-label label-gold">Interactive API Docs</div>
+        <h2>Swagger UI</h2>
+        <p>Explore and test all 30+ API endpoints interactively. Built-in request builder with live responses.</p>
+      </a>
+
+      <!-- API Endpoints -->
+      <a href="/docs" class="card card-api card-sm" id="card-api">
+        <div class="card-top">
+          <div class="card-icon icon-indigo">⚡</div>
+          <div class="arrow">↗</div>
+        </div>
+        <div class="card-label label-indigo">REST + WebSocket API</div>
+        <h2>Backend API</h2>
+        <div class="endpoints">
+          <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/telemetry</span></div>
+          <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/ai/chat</span></div>
+          <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/weather</span></div>
+          <div class="endpoint"><span class="method method-post">POST</span><span class="endpoint-path">/api/controls</span></div>
+          <div class="endpoint"><span class="method method-get">GET</span><span class="endpoint-path">/api/marketplace</span></div>
+        </div>
+      </a>
+
+      <!-- Database -->
+      <a href="/api/telemetry" class="card card-db card-sm" id="card-db">
+        <div class="card-top">
+          <div class="card-icon icon-pink">🗄️</div>
+          <div class="arrow">↗</div>
+        </div>
+        <div class="card-label label-pink">SQLite Database</div>
+        <h2>Data Explorer</h2>
+        <p>Live data from sensor readings, marketplace listings, alert logs, and farm controls.</p>
+        <div class="features">
+          <span class="feature-tag">📊 Sensor Readings</span>
+          <span class="feature-tag">🛒 Listings</span>
+          <span class="feature-tag">🔔 Alerts</span>
+        </div>
+      </a>
+
+      <!-- Health Check -->
+      <a href="/api/health" class="card card-health card-md" id="card-health">
+        <div class="card-top">
+          <div class="card-icon icon-sky">❤️</div>
+          <div class="arrow">↗</div>
+        </div>
+        <div class="card-label label-sky">System Health</div>
+        <h2>Health Check API</h2>
+        <div class="health-json">
+          <span class="json-key">"status"</span>: <span class="json-val-green">"healthy"</span>,<br>
+          <span class="json-key">"version"</span>: <span class="json-val-str">"1.1.0"</span>,<br>
+          <span class="json-key">"ai"</span>: <span class="json-val-str">"groq/llama3.3-70b"</span>,<br>
+          <span class="json-key">"languages"</span>: <span class="json-val-str">"Tamil, English"</span>
+        </div>
+      </a>
+
+      <!-- AI Assistant -->
+      <a href="/" class="card card-app card-sm" id="card-ai" style="border-color: rgba(168,85,247,0.2);">
+        <div class="card-top">
+          <div class="card-icon" style="background:rgba(168,85,247,0.15);">🤖</div>
+          <div class="arrow">↗</div>
+        </div>
+        <div class="card-label" style="color:#d8b4fe;">AI Voice Assistant</div>
+        <h2>Ulavan AI Chat</h2>
+        <p>Multilingual AI assistant powered by Groq Llama 3.3 70B. Speaks Tamil & English for farmer-friendly interaction.</p>
+      </a>
+
+    </div>
+
+    <!-- Public URL Box -->
+    <div class="footer">
+      <p>🔗 Public URL (share with anyone)</p>
+      <div class="public-url-box" id="url-display">
+        <span id="current-url"></span>
+        <button class="copy-btn" onclick="copyURL()">📋 Copy</button>
+      </div>
+      <p style="margin-top: 12px; font-size: 12px;">
+        Server running on FastAPI + Uvicorn &nbsp;•&nbsp; SQLite DB &nbsp;•&nbsp; Groq AI &nbsp;•&nbsp; Tamil 🇮🇳
+      </p>
+    </div>
+
+  </div>
+
+  <script>
+    // Display current URL
+    document.getElementById('current-url').textContent = window.location.origin;
+
+    function copyURL() {
+      navigator.clipboard.writeText(window.location.origin).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = '✅ Copied!';
+        setTimeout(() => btn.textContent = '📋 Copy', 2000);
+      });
+    }
+
+    // Live health check
+    async function checkHealth() {
+      try {
+        const res = await fetch('/api/health');
+        const data = await res.json();
+        const dots = document.querySelectorAll('.status-dot');
+        dots.forEach(d => {
+          d.style.background = data.status === 'healthy' ? '#4ade80' : '#f87171';
+        });
+      } catch(e) {}
+    }
+    checkHealth();
+    setInterval(checkHealth, 30000);
+
+    // Card hover glow effect
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty('--mx', x + '%');
+        card.style.setProperty('--my', y + '%');
+      });
+    });
+  </script>
+
+</body>
+</html>
